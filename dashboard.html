@@ -1,0 +1,1204 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#17372d">
+  <title>Dashboard | ก๋วยเตี๋ยวโบราณ by เจ๊อ้น</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" defer></script>
+  <style>
+    :root {
+      --ink:#182720; --muted:#758078; --green:#17372d; --green-2:#285746;
+      --mint:#e9f3ed; --mint-2:#d6e9dc; --paper:#f6f7f4; --white:#fff;
+      --line:#e7ebe6; --amber:#a76b18; --amber-bg:#fff4df; --red:#b74646;
+      --red-bg:#fff0ef; --blue:#386b9b; --blue-bg:#edf5fc; --shadow:0 16px 45px rgba(22,45,34,.08);
+      --radius:18px;
+    }
+    *{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;background:var(--paper);color:var(--ink);font-family:"IBM Plex Sans Thai","Manrope",system-ui,sans-serif;font-size:14px;line-height:1.55} button,input,select,textarea{font:inherit} button{cursor:pointer} .hidden{display:none!important}
+    .login-screen{min-height:100dvh;display:grid;place-items:center;padding:24px;background:radial-gradient(circle at 15% 10%,#e6f0e8 0,transparent 34%),radial-gradient(circle at 90% 90%,#e7eee8 0,transparent 32%),var(--paper)}
+    .login-card{width:min(100%,420px);background:#fff;border:1px solid var(--line);border-radius:28px;padding:34px;box-shadow:var(--shadow)}
+    .brand-mark{width:58px;height:58px;border-radius:19px;background:var(--green);color:#fff;display:grid;place-items:center;font-size:26px;margin:0 auto 17px}
+    .login-title{text-align:center;font-size:22px;font-weight:700;letter-spacing:-.3px;margin:0}.login-sub{text-align:center;color:var(--muted);margin:6px 0 26px}
+    .field{display:grid;gap:7px;margin-bottom:15px}.field label,.field-label{font-size:12px;font-weight:600;color:#556159}.field input,.field select,.field textarea,.toolbar input,.toolbar select{width:100%;border:1px solid #dfe5df;border-radius:12px;background:#fff;color:var(--ink);padding:11px 13px;outline:none;min-height:43px;transition:border .18s,box-shadow .18s}.field textarea{min-height:90px;resize:vertical}.field input:focus,.field select:focus,.field textarea:focus,.toolbar input:focus,.toolbar select:focus{border-color:#7eaa91;box-shadow:0 0 0 3px rgba(54,119,82,.10)}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid transparent;border-radius:12px;padding:10px 14px;min-height:40px;font-weight:600;font-size:13px;transition:transform .15s,background .15s,border .15s}.btn:active{transform:scale(.98)}.btn-primary{background:var(--green);color:#fff}.btn-primary:hover{background:#214b3b}.btn-soft{background:var(--mint);color:var(--green);border-color:#d5e7da}.btn-ghost{background:#fff;border-color:var(--line);color:#425047}.btn-danger{background:var(--red-bg);color:var(--red);border-color:#f5d8d5}.btn-warning{background:var(--amber-bg);color:var(--amber);border-color:#f1e2bf}.btn-block{width:100%}.btn-sm{min-height:32px;padding:6px 10px;font-size:12px;border-radius:9px}.btn-icon{width:38px;padding:0}.login-error{margin-top:12px;color:var(--red);font-size:12px;min-height:18px;text-align:center}.login-foot{text-align:center;color:#9aa39c;font-size:11px;margin-top:20px}
+    .app-shell{min-height:100dvh;display:grid;grid-template-columns:252px minmax(0,1fr)}
+    .sidebar{background:#fff;border-right:1px solid var(--line);padding:22px 16px;display:flex;flex-direction:column;position:sticky;top:0;height:100dvh;z-index:20}
+    .side-brand{display:flex;align-items:center;gap:11px;padding:0 8px 25px}.side-logo{width:42px;height:42px;display:grid;place-items:center;border-radius:14px;background:var(--green);color:#fff;font-size:20px}.side-brand strong{display:block;font-size:13px;line-height:1.35}.side-brand small{display:block;color:var(--muted);font-size:10px;margin-top:3px}
+    .nav-label{color:#a0aaa2;font-size:10px;letter-spacing:1.1px;font-weight:700;padding:14px 12px 8px;text-transform:uppercase}.side-nav{display:grid;gap:4px}.nav-btn{border:0;background:transparent;color:#647068;text-align:left;padding:11px 12px;border-radius:12px;display:flex;align-items:center;gap:12px;font-weight:500;font-size:13px;width:100%}.nav-btn .nav-ico{width:19px;text-align:center;font-size:17px}.nav-btn:hover{background:#f5f8f5;color:var(--green)}.nav-btn.active{background:var(--mint);color:var(--green);font-weight:700}.sidebar-bottom{margin-top:auto;border-top:1px solid var(--line);padding:16px 5px 0}.admin-meta{display:flex;align-items:center;gap:10px;padding:7px 5px 13px}.admin-avatar{width:34px;height:34px;border-radius:50%;background:#e8eee9;color:var(--green);display:grid;place-items:center;font-weight:700}.admin-meta b{display:block;font-size:12px}.admin-meta small{color:var(--muted);font-size:10px}
+    .main-area{min-width:0}.topbar{height:74px;background:rgba(255,255,255,.88);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 30px;position:sticky;top:0;z-index:15}.topbar-left{display:flex;align-items:center;gap:13px}.mobile-menu{display:none}.topbar h1{font-size:18px;margin:0;font-weight:700}.topbar p{font-size:11px;color:var(--muted);margin:2px 0 0}.top-actions{display:flex;align-items:center;gap:9px}.store-chip{display:flex;align-items:center;gap:7px;color:#5d6b61;font-size:11px;background:#f5f8f5;padding:8px 11px;border-radius:999px}.status-dot{width:7px;height:7px;border-radius:50%;background:#44a76a}.page-wrap{max-width:1440px;margin:0 auto;padding:27px 30px 48px}.page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:15px;margin-bottom:22px}.page-head h2{font-size:22px;margin:0;letter-spacing:-.4px}.page-head p{margin:4px 0 0;color:var(--muted);font-size:12px}.page-actions{display:flex;gap:8px;flex-wrap:wrap}
+    .stats-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:18px}.stat-card,.panel,.content-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 4px 16px rgba(22,45,34,.025)}.stat-card{padding:18px}.stat-top{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:12px}.stat-icon{width:35px;height:35px;border-radius:11px;background:var(--mint);color:var(--green);display:grid;place-items:center;font-size:17px}.stat-value{font-family:Manrope,sans-serif;font-size:25px;font-weight:800;letter-spacing:-.7px;margin:12px 0 2px}.stat-foot{font-size:10px;color:#97a199}.dashboard-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(280px,.85fr);gap:16px}.panel{padding:19px;min-width:0}.panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:15px}.panel-head h3{font-size:14px;margin:0}.panel-head small{color:var(--muted);font-size:11px}.chart-bars{height:195px;display:flex;align-items:flex-end;gap:10px;padding:12px 4px 0;border-bottom:1px solid var(--line)}.chart-col{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:7px}.chart-bar{width:min(34px,70%);min-height:4px;border-radius:7px 7px 2px 2px;background:linear-gradient(180deg,#83b99a,#285746);position:relative}.chart-col small{font-size:10px;color:var(--muted)}.chart-col em{font-style:normal;font-size:9px;color:#7c887f}.order-mini-list{display:grid;gap:0}.order-mini{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid #f0f2ef}.order-mini:last-child{border-bottom:0}.order-mini b{font-size:12px}.order-mini small{display:block;color:var(--muted);font-size:10px;margin-top:3px}.order-mini .amount{font-family:Manrope,sans-serif;font-weight:800;font-size:12px;white-space:nowrap}.pill{display:inline-flex;align-items:center;gap:5px;padding:4px 8px;border-radius:999px;font-size:10px;font-weight:700;white-space:nowrap}.pill-new{background:#fff2dc;color:#a56d1d}.pill-accepted,.pill-preparing{background:#edf5fc;color:#386b9b}.pill-ready,.pill-completed,.pill-paid{background:#e8f5ec;color:#347b4f}.pill-cancelled,.pill-rejected{background:#fff0ef;color:#b74646}.pill-neutral{background:#f1f3f1;color:#69736c}
+    .toolbar{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:15px}.toolbar input{max-width:260px}.toolbar select{width:auto;min-width:140px}.content-card{overflow:hidden}.table-wrap{width:100%;overflow:auto}table{border-collapse:collapse;width:100%;min-width:650px}th{text-align:left;background:#f8faf8;color:#7b867e;font-size:10px;font-weight:700;padding:12px 15px;white-space:nowrap}td{border-top:1px solid #edf0ed;padding:13px 15px;font-size:12px;vertical-align:middle}td small{display:block;color:var(--muted);font-size:10px;margin-top:3px}.table-actions{display:flex;gap:6px;align-items:center}.empty-state{text-align:center;padding:42px 20px;color:var(--muted)}.empty-icon{font-size:28px;margin-bottom:7px}.empty-state b{display:block;color:#526057;font-size:13px;margin-bottom:4px}
+    .cards-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}.product-card{border:1px solid var(--line);border-radius:15px;overflow:hidden;background:#fff}.product-image{height:145px;background:#f1f4f1;display:grid;place-items:center;overflow:hidden}.product-image img{width:100%;height:100%;object-fit:cover}.product-image span{font-size:30px;color:#aab3ac}.product-info{padding:13px}.product-info h4{font-size:13px;margin:0 0 4px}.product-info p{font-size:10px;color:var(--muted);margin:0 0 10px;min-height:16px}.product-bottom{display:flex;align-items:center;justify-content:space-between;gap:8px}.product-price{font-family:Manrope,sans-serif;font-size:14px;font-weight:800}.cat-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:15px}.cat-chip{padding:7px 11px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#58655d;font-size:11px}.cat-chip.active{background:var(--green);border-color:var(--green);color:#fff}
+    .settings-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}.setting-section{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px}.setting-section h3{font-size:14px;margin:0 0 15px}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.form-grid .field{margin:0}.form-grid .span-2{grid-column:span 2}.check-row{display:flex;align-items:center;gap:9px;padding:9px 0;font-size:12px;color:#4d5a51}.check-row input{accent-color:var(--green);width:16px;height:16px}.helper{font-size:10px;color:var(--muted);line-height:1.6}.divider{height:1px;background:var(--line);margin:14px 0}.reward-card,.group-card{border:1px solid var(--line);border-radius:14px;padding:14px;background:#fff}.reward-card h4,.group-card h4{margin:0 0 4px;font-size:13px}.reward-card p,.group-card p{margin:0;color:var(--muted);font-size:10px}.reward-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.two-column{display:grid;grid-template-columns:1fr 1fr;gap:15px}.qr-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,.9fr);gap:15px}.qr-stage{border:1px dashed #cbd8ce;border-radius:17px;background:#f9fbf9;padding:20px;text-align:center;min-height:260px;display:grid;place-items:center}.qr-stage #qrCodeMount{background:#fff;padding:12px;border-radius:12px;display:inline-block}.qr-stage canvas,.qr-stage img{display:block;margin:auto}.qr-timer{font-family:Manrope,sans-serif;font-weight:800;font-size:25px;color:var(--green)}.qr-result{display:grid;place-items:center;gap:8px;padding:20px}.success-mark{width:70px;height:70px;border-radius:50%;background:#5dcb7b;color:white;display:grid;place-items:center;font-size:39px}.scanner-box{width:100%;max-width:450px;margin:0 auto}.scanner-box #qrReader{width:100%;overflow:hidden;border-radius:12px}.scanner-manual{display:flex;gap:8px;margin-top:12px}.scanner-manual input{flex:1;min-width:0;border:1px solid var(--line);border-radius:10px;padding:10px}
+    .sound-control{display:flex;align-items:center;gap:8px;background:#f4f8f5;padding:7px 10px;border-radius:999px}.sound-control span{font-size:11px;color:#607067}.toggle{width:36px;height:20px;border-radius:999px;border:0;background:#cbd3cc;position:relative;padding:0}.toggle:after{content:"";position:absolute;width:14px;height:14px;border-radius:50%;background:#fff;top:3px;left:3px;transition:left .15s}.toggle.on{background:#3f9561}.toggle.on:after{left:19px}.modal-backdrop{position:fixed;inset:0;background:rgba(15,28,21,.45);backdrop-filter:blur(4px);z-index:70;display:grid;place-items:center;padding:18px}.modal{width:min(100%,650px);max-height:min(88dvh,850px);overflow:auto;background:#fff;border-radius:22px;box-shadow:0 24px 80px rgba(0,0,0,.2);animation:pop .16s ease}.modal.wide{width:min(100%,860px)}@keyframes pop{from{opacity:.7;transform:translateY(7px) scale(.99)}to{opacity:1;transform:none}}.modal-head{position:sticky;top:0;background:rgba(255,255,255,.96);backdrop-filter:blur(10px);padding:17px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;z-index:2}.modal-head h3{font-size:15px;margin:0}.modal-body{padding:20px}.modal-foot{padding:14px 20px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:8px;position:sticky;bottom:0;background:#fff}.icon-close{width:32px;height:32px;border-radius:10px;border:0;background:#f3f5f3;color:#5e6b62;font-size:18px}.toast-wrap{position:fixed;right:20px;bottom:20px;z-index:100;display:grid;gap:9px;width:min(360px,calc(100% - 40px))}.toast{background:#1d3027;color:#fff;padding:13px 15px;border-radius:13px;box-shadow:var(--shadow);font-size:12px;display:flex;align-items:flex-start;gap:9px;animation:pop .18s ease}.toast.error{background:#873c3c}.toast.warn{background:#78531e}.toast b{display:block;font-size:12px}.toast small{display:block;opacity:.8;font-size:10px;margin-top:2px}.mobile-bottom{display:none}.loading-inline{display:inline-flex;align-items:center;gap:8px;color:var(--muted);font-size:11px}.spinner{width:15px;height:15px;border:2px solid #dce5de;border-top-color:var(--green);border-radius:50%;animation:spin .7s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+    @media(max-width:1100px){.stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.cards-grid,.reward-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.page-wrap{padding-left:22px;padding-right:22px}}
+    @media(max-width:780px){.app-shell{grid-template-columns:1fr}.sidebar{position:fixed;left:0;top:0;bottom:0;width:275px;height:100dvh;transform:translateX(-102%);transition:transform .2s;box-shadow:var(--shadow)}.sidebar.open{transform:translateX(0)}.mobile-menu{display:inline-flex}.topbar{height:64px;padding:0 15px}.topbar h1{font-size:16px}.topbar p{display:none}.store-chip{display:none}.page-wrap{padding:20px 14px 90px}.dashboard-grid,.settings-grid,.qr-layout,.two-column{grid-template-columns:1fr}.page-head{align-items:flex-start;flex-direction:column}.page-head h2{font-size:20px}.stats-grid{gap:9px}.stat-card{padding:13px}.stat-value{font-size:21px}.panel{padding:15px}.cards-grid,.reward-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.product-image{height:125px}.top-actions .btn-label{display:none}.mobile-bottom{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:25;background:rgba(255,255,255,.94);backdrop-filter:blur(15px);border-top:1px solid var(--line);padding:7px 8px calc(7px + env(safe-area-inset-bottom));justify-content:space-around}.mobile-bottom button{border:0;background:none;color:#859088;display:grid;justify-items:center;gap:2px;font-size:9px;padding:4px 9px}.mobile-bottom button span:first-child{font-size:17px}.mobile-bottom button.active{color:var(--green);font-weight:700}.form-grid{grid-template-columns:1fr}.form-grid .span-2{grid-column:auto}.modal-backdrop{padding:8px}.modal{border-radius:18px;max-height:92dvh}.modal-body{padding:15px}.modal-foot{padding:12px 15px}.sound-control span{display:none}}
+    @media(max-width:420px){.stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.cards-grid,.reward-grid{grid-template-columns:1fr}.product-image{height:170px}.login-card{padding:26px 21px}.toolbar input{max-width:none;flex:1}.toolbar select{flex:1;min-width:110px}.page-actions{width:100%}.page-actions .btn{flex:1}}
+  </style>
+</head>
+<body>
+  <section id="loginScreen" class="login-screen">
+    <div class="login-card">
+      <div class="brand-mark">🍜</div>
+      <h1 class="login-title">ก๋วยเตี๋ยวโบราณ by เจ๊อ้น</h1>
+      <p class="login-sub">ระบบจัดการร้านอาหาร</p>
+      <form id="loginForm">
+        <div class="field">
+          <label for="adminPassword">รหัสเข้าใช้งาน</label>
+          <input id="adminPassword" type="password" autocomplete="current-password" placeholder="กรอกรหัสเข้าใช้งาน" required autofocus>
+        </div>
+        <button class="btn btn-primary btn-block" type="submit" id="loginButton">เข้าสู่ระบบ</button>
+        <div id="loginError" class="login-error" aria-live="polite"></div>
+      </form>
+      <div class="login-foot">เฉพาะเจ้าของร้านและผู้ได้รับอนุญาต</div>
+    </div>
+  </section>
+
+  <div id="appShell" class="app-shell hidden">
+    <aside id="sidebar" class="sidebar">
+      <div class="side-brand"><div class="side-logo">🍜</div><div><strong>ก๋วยเตี๋ยวโบราณ<br>by เจ๊อ้น</strong><small>RESTAURANT CONTROL</small></div></div>
+      <div class="nav-label">เมนูหลัก</div>
+      <nav class="side-nav" id="sideNav">
+        <button class="nav-btn active" data-page="overview"><span class="nav-ico">▦</span>ภาพรวมร้าน</button>
+        <button class="nav-btn" data-page="orders"><span class="nav-ico">▤</span>จัดการคำสั่งซื้อ</button>
+        <button class="nav-btn" data-page="menu"><span class="nav-ico">🍜</span>เมนูอาหาร</button>
+        <button class="nav-btn" data-page="options"><span class="nav-ico">☷</span>ตัวเลือกอาหาร</button>
+        <button class="nav-btn" data-page="customers"><span class="nav-ico">♙</span>สมาชิก</button>
+        <button class="nav-btn" data-page="points"><span class="nav-ico">✧</span>แต้มและของรางวัล</button>
+        <button class="nav-btn" data-page="settings"><span class="nav-ico">⚙</span>ตั้งค่าร้านค้า</button>
+        <button class="nav-btn" data-page="staff"><span class="nav-ico">♧</span>ผู้ดูแล LINE</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="admin-meta"><div class="admin-avatar">JA</div><div><b>เจ้าของร้าน</b><small>OWNER ACCESS</small></div></div>
+        <button class="btn btn-ghost btn-block" id="logoutButton">ออกจากระบบ</button>
+      </div>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="btn btn-ghost btn-icon mobile-menu" id="mobileMenuButton" aria-label="เปิดเมนู">☰</button>
+          <div><h1 id="topTitle">ภาพรวมร้าน</h1><p id="topSubtitle">ภาพรวมยอดขายและคำสั่งซื้อของวันนี้</p></div>
+        </div>
+        <div class="top-actions">
+          <div class="sound-control"><span id="soundLabel">เสียงแจ้งเตือน</span><button class="toggle" id="soundToggle" aria-label="เปิดปิดเสียง"></button></div>
+          <button class="btn btn-ghost btn-sm" id="testSoundButton" title="ทดลองเสียง">♫ <span class="btn-label">ทดลองเสียง</span></button>
+          <div class="store-chip"><span class="status-dot"></span>ระบบออนไลน์</div>
+          <button class="btn btn-ghost btn-icon" id="refreshButton" title="รีเฟรชข้อมูล">↻</button>
+        </div>
+      </header>
+      <div id="pageContent" class="page-wrap"><div class="empty-state"><span class="spinner"></span><b>กำลังโหลดข้อมูล</b></div></div>
+    </main>
+  </div>
+
+  <nav class="mobile-bottom hidden" id="mobileBottomNav">
+    <button data-page="overview" class="active"><span>▦</span>ภาพรวม</button>
+    <button data-page="orders"><span>▤</span>ออเดอร์</button>
+    <button data-page="menu"><span>🍜</span>เมนู</button>
+    <button data-page="points"><span>✧</span>แต้ม</button>
+    <button data-page="settings"><span>⚙</span>ตั้งค่า</button>
+  </nav>
+
+  <div id="modalRoot"></div>
+  <div id="toastRoot" class="toast-wrap" aria-live="polite"></div>
+
+  <script>
+    'use strict';
+
+    /* =====================================================================
+       1. CONFIGURATION
+       ===================================================================== */
+    const CONFIG = Object.freeze({
+      API_URL: 'PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_EXEC_URL_HERE',
+      API_TIMEOUT_MS: 25000,
+      ORDER_POLL_MS: 5000,
+      SUMMARY_POLL_MS: 20000,
+      SESSION_KEY: 'jaeon_admin_session_v1',
+      SOUND_KEY: 'jaeon_admin_sound_enabled'
+    });
+
+    const STATUS = {
+      NEW: 'ออเดอร์ใหม่', ACCEPTED: 'รับออเดอร์แล้ว', PREPARING: 'กำลังปรุงอาหาร',
+      READY: 'อาหารพร้อมแล้ว', COMPLETED: 'เสร็จสิ้น', CANCELLED: 'ยกเลิกแล้ว'
+    };
+    const PAGE_META = {
+      overview: ['ภาพรวมร้าน', 'ภาพรวมยอดขายและคำสั่งซื้อของวันนี้'],
+      orders: ['จัดการคำสั่งซื้อ', 'ตรวจสอบ รับออเดอร์ และติดตามสถานะการทำอาหาร'],
+      menu: ['เมนูอาหาร', 'จัดการรายการอาหาร หมวดหมู่ ราคา และรูปภาพ'],
+      options: ['ตัวเลือกอาหาร', 'ตั้งค่ากลุ่มตัวเลือกและผูกเข้ากับเมนู'],
+      customers: ['สมาชิก', 'ค้นหาสมาชิกและดูประวัติแต้ม'],
+      points: ['แต้มและของรางวัล', 'ตั้งค่าแต้ม สร้าง QR และจัดการการแลกรางวัล'],
+      settings: ['ตั้งค่าร้านค้า', 'ข้อมูลร้าน เวลาเปิดปิด และการรับชำระเงิน'],
+      staff: ['ผู้ดูแล LINE', 'จัดการ LINE User ID ที่ได้รับอนุญาตให้กดปุ่มในกลุ่ม']
+    };
+
+    const state = {
+      sessionToken: '', page: 'overview', dashboard: null, orders: [], catalog: null,
+      settings: {}, pointSettings: {}, customers: [], pointTransactions: [], redemptions: [],
+      rewards: [], lineAdmins: [], orderQuery: '', orderStatus: '', orderDate: '',
+      customerQuery: '', selectedCategory: 'all', orderPollTimer: null, summaryTimer: null,
+      knownOrderIds: new Set(), pollingReady: false, audioContext: null, audioUnlocked: false,
+      soundEnabled: localStorage.getItem(CONFIG.SOUND_KEY) !== 'false',
+      storeQr: null, storeQrPollTimer: null, storeQrTimer: null, qrScanner: null,
+      orderModalBusy: false
+    };
+
+    const $ = (selector, root = document) => root.querySelector(selector);
+    const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
+
+    document.addEventListener('DOMContentLoaded', initialize);
+
+    /* =====================================================================
+       2. INITIALIZATION AND AUTHENTICATION
+       ===================================================================== */
+    async function initialize() {
+      $('#loginForm').addEventListener('submit', handleLogin);
+      $('#logoutButton').addEventListener('click', logout);
+      $('#mobileMenuButton').addEventListener('click', () => $('#sidebar').classList.toggle('open'));
+      $('#refreshButton').addEventListener('click', () => refreshCurrentPage(true));
+      $('#soundToggle').addEventListener('click', toggleSound);
+      $('#testSoundButton').addEventListener('click', async () => { await unlockAudio(); playOrderSound(); toast('ทดลองเสียงแจ้งเตือนแล้ว'); });
+      document.addEventListener('click', handleClick);
+      document.addEventListener('submit', handleSubmit);
+      document.addEventListener('change', handleChange);
+      document.addEventListener('input', handleInput);
+      $('#soundToggle').classList.toggle('on', state.soundEnabled);
+
+      if (!isApiConfigured()) {
+        $('#loginError').textContent = 'กรุณาตั้งค่า API_URL ในส่วน FRONTEND CONFIGURATION ก่อนใช้งาน';
+        return;
+      }
+
+      const saved = sessionStorage.getItem(CONFIG.SESSION_KEY);
+      if (saved) {
+        try {
+          state.sessionToken = saved;
+          await adminApi('admin.getDashboard');
+          await enterDashboard();
+          return;
+        } catch (error) {
+          clearSession();
+          $('#loginError').textContent = error.message || 'Session หมดอายุ กรุณาเข้าสู่ระบบใหม่';
+        }
+      }
+      $('#loginScreen').classList.remove('hidden');
+    }
+
+    function isApiConfigured() {
+      return /^https:\/\/script\.google\.com\/macros\/s\/.+\/exec$/.test(CONFIG.API_URL);
+    }
+
+    async function handleLogin(event) {
+      event.preventDefault();
+      const password = $('#adminPassword').value;
+      const button = $('#loginButton');
+      const errorBox = $('#loginError');
+      errorBox.textContent = '';
+      if (!password) { errorBox.textContent = 'กรุณากรอกรหัสเข้าใช้งาน'; return; }
+      button.disabled = true;
+      button.innerHTML = '<span class="spinner"></span> กำลังตรวจสอบ...';
+      await unlockAudio();
+      try {
+        const result = await api('admin.login', { password });
+        if (!result || !result.sessionToken) throw new Error('ระบบไม่ส่ง Session กลับมา กรุณาลองใหม่');
+        state.sessionToken = result.sessionToken;
+        sessionStorage.setItem(CONFIG.SESSION_KEY, result.sessionToken);
+        $('#adminPassword').value = '';
+        await enterDashboard();
+      } catch (error) {
+        errorBox.textContent = error.message || 'เข้าสู่ระบบไม่สำเร็จ';
+      } finally {
+        button.disabled = false;
+        button.textContent = 'เข้าสู่ระบบ';
+      }
+    }
+
+    async function enterDashboard() {
+      $('#loginScreen').classList.add('hidden');
+      $('#appShell').classList.remove('hidden');
+      $('#mobileBottomNav').classList.remove('hidden');
+      $('#sidebar').classList.remove('open');
+      try {
+        await loadInitialData();
+        render();
+        startPolling();
+      } catch (error) {
+        if (isAuthError(error)) { clearSession(); $('#appShell').classList.add('hidden'); $('#mobileBottomNav').classList.add('hidden'); $('#loginScreen').classList.remove('hidden'); }
+        toast(error.message || 'โหลดข้อมูลไม่สำเร็จ', 'error');
+      }
+    }
+
+    function clearSession() {
+      state.sessionToken = '';
+      sessionStorage.removeItem(CONFIG.SESSION_KEY);
+      stopPolling();
+    }
+
+    async function logout() {
+      stopPolling();
+      try { if (state.sessionToken) await adminApi('admin.logout'); } catch (_) { /* Session may already be expired. */ }
+      clearSession();
+      $('#appShell').classList.add('hidden');
+      $('#mobileBottomNav').classList.add('hidden');
+      $('#loginScreen').classList.remove('hidden');
+      $('#loginError').textContent = '';
+      $('#adminPassword').value = '';
+      toast('ออกจากระบบแล้ว');
+    }
+
+    /* =====================================================================
+       3. GOOGLE APPS SCRIPT API TRANSPORT
+       Same hidden-iframe / postMessage contract as index.html.
+       ===================================================================== */
+    function api(action, data = {}) {
+      return new Promise((resolve, reject) => {
+        const requestId = createRequestId();
+        const frameName = 'jaeon_admin_api_' + requestId;
+        const frame = document.createElement('iframe');
+        frame.name = frameName;
+        frame.title = 'API request';
+        frame.setAttribute('aria-hidden', 'true');
+        frame.style.cssText = 'position:absolute;width:0;height:0;border:0;visibility:hidden;';
+
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = CONFIG.API_URL;
+        form.target = frameName;
+        form.style.display = 'none';
+
+        const payloadInput = document.createElement('input');
+        payloadInput.type = 'hidden';
+        payloadInput.name = 'payload';
+        payloadInput.value = JSON.stringify({ requestId, action, data: data || {} });
+        form.appendChild(payloadInput);
+
+        let settled = false;
+        const cleanup = () => {
+          window.removeEventListener('message', onMessage);
+          window.clearTimeout(timeoutId);
+          form.remove(); frame.remove();
+        };
+        const finish = (fn, value) => { if (settled) return; settled = true; cleanup(); fn(value); };
+        const onMessage = event => {
+          if (event.source !== frame.contentWindow) return;
+          const message = event.data;
+          if (!message || message.channel !== 'JAEON_GAS_API' || message.requestId !== requestId) return;
+          const result = message.result;
+          if (result && result.ok) finish(resolve, result.data);
+          else {
+            const error = new Error(result && result.error ? result.error.message : 'API ทำงานไม่สำเร็จ');
+            error.code = result && result.error ? result.error.code : 'API_ERROR';
+            finish(reject, error);
+          }
+        };
+        const timeoutId = window.setTimeout(() => {
+          const error = new Error('เชื่อมต่อ Google Apps Script ไม่สำเร็จ กรุณาตรวจสอบ URL, Deployment และ FRONTEND_ORIGIN');
+          error.code = 'API_TIMEOUT'; finish(reject, error);
+        }, CONFIG.API_TIMEOUT_MS);
+
+        window.addEventListener('message', onMessage);
+        document.body.append(frame, form);
+        try { form.submit(); } catch (error) { finish(reject, error); }
+      });
+    }
+
+    function adminApi(action, data = {}) {
+      return api(action, Object.assign({}, data, { sessionToken: state.sessionToken }));
+    }
+
+    function isAuthError(error) {
+      return ['UNAUTHORIZED', 'SESSION_EXPIRED'].includes(error && error.code);
+    }
+
+    async function apiGuard(action, data = {}) {
+      try { return await adminApi(action, data); }
+      catch (error) {
+        if (isAuthError(error)) {
+          clearSession(); $('#appShell').classList.add('hidden'); $('#mobileBottomNav').classList.add('hidden');
+          $('#loginScreen').classList.remove('hidden');
+          $('#loginError').textContent = 'Session หมดอายุ กรุณาเข้าสู่ระบบใหม่';
+        }
+        throw error;
+      }
+    }
+
+    function createRequestId() {
+      const bytes = new Uint8Array(18);
+      crypto.getRandomValues(bytes);
+      return Array.from(bytes, byte => byte.toString(16).padStart(2, '0')).join('');
+    }
+
+    /* =====================================================================
+       4. DATA LOADING AND POLLING
+       ===================================================================== */
+    async function loadInitialData() {
+      const [dashboard, catalog, settings, pointSettings, orders] = await Promise.all([
+        apiGuard('admin.getDashboard'), apiGuard('admin.getCatalog'),
+        apiGuard('admin.getStoreSettings'), apiGuard('admin.getPointSettings'),
+        apiGuard('admin.listOrders', { limit: 100 })
+      ]);
+      state.dashboard = dashboard || {};
+      state.catalog = catalog || { categories: [], products: [], optionGroups: [], options: [], productOptions: [] };
+      state.settings = settings || {};
+      state.pointSettings = pointSettings || {};
+      state.orders = Array.isArray(orders) ? orders : [];
+      state.knownOrderIds = new Set(state.orders.map(order => String(order.orderId)));
+      state.pollingReady = true;
+    }
+
+    async function refreshCurrentPage(showMessage = false) {
+      try {
+        if (state.page === 'overview') await refreshOverview();
+        else if (state.page === 'orders') await loadOrders();
+        else if (state.page === 'menu' || state.page === 'options') await loadCatalog();
+        else if (state.page === 'customers') await loadCustomers();
+        else if (state.page === 'points') await loadPointsData();
+        else if (state.page === 'settings') await loadSettings();
+        else if (state.page === 'staff') await loadLineAdmins();
+        render();
+        if (showMessage) toast('อัปเดตข้อมูลแล้ว');
+      } catch (error) { toast(error.message || 'อัปเดตข้อมูลไม่สำเร็จ', 'error'); }
+    }
+
+    async function refreshOverview() {
+      const [dashboard, orders] = await Promise.all([
+        apiGuard('admin.getDashboard'), apiGuard('admin.listOrders', { limit: 100 })
+      ]);
+      state.dashboard = dashboard || {};
+      state.orders = Array.isArray(orders) ? orders : [];
+    }
+
+    async function loadOrders() {
+      const filters = { limit: 200 };
+      if (state.orderStatus) filters.status = state.orderStatus;
+      if (state.orderQuery) filters.query = state.orderQuery;
+      if (state.orderDate) filters.date = state.orderDate;
+      state.orders = await apiGuard('admin.listOrders', filters) || [];
+    }
+
+    async function loadCatalog() {
+      state.catalog = await apiGuard('admin.getCatalog') || state.catalog;
+    }
+
+    async function loadCustomers() {
+      state.customers = await apiGuard('admin.getCustomers', { query: state.customerQuery, limit: 300 }) || [];
+    }
+
+    async function loadPointsData() {
+      const results = await Promise.all([
+        apiGuard('admin.getPointSettings'), apiGuard('admin.listPointTransactions', { limit: 200 }),
+        apiGuard('admin.listRedemptions', { limit: 200 }), api('customer.getRewards', {}),
+        apiGuard('admin.getCustomers', { limit: 300 })
+      ]);
+      state.pointSettings = results[0] || {};
+      state.pointTransactions = results[1] || [];
+      state.redemptions = results[2] || [];
+      state.rewards = results[3] || [];
+      state.customers = results[4] || state.customers;
+    }
+
+    async function loadSettings() {
+      state.settings = await apiGuard('admin.getStoreSettings') || {};
+    }
+
+    async function loadLineAdmins() {
+      state.lineAdmins = await apiGuard('admin.listLineAdmins') || [];
+    }
+
+    function startPolling() {
+      stopPolling();
+      state.orderPollTimer = window.setInterval(pollNewOrders, CONFIG.ORDER_POLL_MS);
+      state.summaryTimer = window.setInterval(async () => {
+        try {
+          const summary = await apiGuard('admin.getDashboard');
+          state.dashboard = summary || state.dashboard;
+          if (state.page === 'overview') render();
+        } catch (error) { console.warn('Dashboard summary polling:', error); }
+      }, CONFIG.SUMMARY_POLL_MS);
+    }
+
+    function stopPolling() {
+      if (state.orderPollTimer) clearInterval(state.orderPollTimer);
+      if (state.summaryTimer) clearInterval(state.summaryTimer);
+      state.orderPollTimer = null; state.summaryTimer = null;
+    }
+
+    async function pollNewOrders() {
+      if (!state.sessionToken || document.hidden) return;
+      try {
+        const latest = await apiGuard('admin.listOrders', { limit: 100 });
+        const current = Array.isArray(latest) ? latest : [];
+        const fresh = current.filter(order => !state.knownOrderIds.has(String(order.orderId)));
+        current.forEach(order => state.knownOrderIds.add(String(order.orderId)));
+        if (state.knownOrderIds.size > 600) state.knownOrderIds = new Set(current.map(order => String(order.orderId)));
+        state.orders = current;
+        if (fresh.length) {
+          fresh.forEach(order => {
+            playOrderSound();
+            toast('มีคำสั่งซื้อใหม่ ' + order.orderId, 'success', 'ยอด ' + money(order.total) + ' · ' + (order.customerName || 'ลูกค้า'));
+          });
+          if (state.page === 'overview' || state.page === 'orders') render();
+          const [summary] = await Promise.all([apiGuard('admin.getDashboard')]);
+          state.dashboard = summary || state.dashboard;
+          if (state.page === 'overview') render();
+        }
+      } catch (error) { console.warn('Order polling:', error); }
+    }
+
+    /* =====================================================================
+       5. NAVIGATION AND GLOBAL INTERACTIONS
+       ===================================================================== */
+    async function navigate(page) {
+      if (!PAGE_META[page]) return;
+      state.page = page;
+      $('#sidebar').classList.remove('open');
+      $$('.nav-btn').forEach(button => button.classList.toggle('active', button.dataset.page === page));
+      $$('#mobileBottomNav button').forEach(button => button.classList.toggle('active', button.dataset.page === page));
+      $('#topTitle').textContent = PAGE_META[page][0];
+      $('#topSubtitle').textContent = PAGE_META[page][1];
+      try {
+        if (page === 'overview') await refreshOverview();
+        if (page === 'orders') await loadOrders();
+        if (page === 'menu' || page === 'options') await loadCatalog();
+        if (page === 'customers') await loadCustomers();
+        if (page === 'points') await loadPointsData();
+        if (page === 'settings') await loadSettings();
+        if (page === 'staff') await loadLineAdmins();
+      } catch (error) { toast(error.message || 'โหลดข้อมูลไม่สำเร็จ', 'error'); }
+      render();
+    }
+
+    function handleClick(event) {
+      const nav = event.target.closest('[data-page]');
+      if (nav) { navigate(nav.dataset.page); return; }
+      const action = event.target.closest('[data-action]');
+      if (!action) {
+        if (event.target.classList.contains('modal-backdrop')) closeModal();
+        return;
+      }
+      const name = action.dataset.action;
+      const id = action.dataset.id;
+      if (name === 'close-modal') closeModal();
+      else if (name === 'new-category') openCategoryModal();
+      else if (name === 'edit-category') openCategoryModal(id);
+      else if (name === 'new-product') openProductModal();
+      else if (name === 'edit-product') openProductModal(id);
+      else if (name === 'toggle-product') toggleProduct(id, action.dataset.available === 'true');
+      else if (name === 'new-group') openGroupModal();
+      else if (name === 'edit-group') openGroupModal(id);
+      else if (name === 'new-option') openOptionModal(action.dataset.groupId);
+      else if (name === 'link-group') openLinkGroupModal(id);
+      else if (name === 'order-detail') openOrderDetail(id);
+      else if (name === 'order-status') changeOrderStatus(id, action.dataset.status);
+      else if (name === 'payment-status') changePaymentStatus(id, action.dataset.status);
+      else if (name === 'customer-detail') openCustomerDetail(id);
+      else if (name === 'adjust-points') openAdjustPointsModal(id);
+      else if (name === 'new-reward') openRewardModal();
+      else if (name === 'edit-reward') openRewardModal(id);
+      else if (name === 'create-store-qr') createStoreQr();
+      else if (name === 'open-customer-scanner') openCustomerScanner();
+      else if (name === 'start-camera') startCameraScan();
+      else if (name === 'submit-manual-qr') submitManualQr();
+      else if (name === 'redemption-status') changeRedemptionStatus(id, action.dataset.status);
+      else if (name === 'export-orders') exportOrdersCsv();
+      else if (name === 'save-point-settings') savePointSettings();
+      else if (name === 'add-line-admin') openLineAdminModal();
+      else if (name === 'refresh-orders') refreshCurrentPage(true);
+      else if (name === 'switch-menu-tab') { state.menuTab = action.dataset.tab; render(); }
+    }
+
+    function handleInput(event) {
+      if (event.target.id === 'orderSearch') {
+        state.orderQuery = event.target.value.trim();
+        debounceLoad('orders');
+      } else if (event.target.id === 'customerSearch') {
+        state.customerQuery = event.target.value.trim();
+        debounceLoad('customers');
+      }
+    }
+
+    let searchDebounce = null;
+    function debounceLoad(page) {
+      clearTimeout(searchDebounce);
+      searchDebounce = setTimeout(async () => {
+        try { if (page === 'orders') await loadOrders(); else await loadCustomers(); render(); }
+        catch (error) { toast(error.message, 'error'); }
+      }, 300);
+    }
+
+    function handleChange(event) {
+      const target = event.target;
+      if (target.id === 'orderStatusFilter') { state.orderStatus = target.value; loadOrders().then(render).catch(err => toast(err.message, 'error')); }
+      if (target.id === 'orderDateFilter') { state.orderDate = target.value; loadOrders().then(render).catch(err => toast(err.message, 'error')); }
+      if (target.id === 'productImageFile') uploadSelectedImage(target.files && target.files[0]);
+      if (target.id === 'categoryFilter') { state.selectedCategory = target.value; render(); }
+    }
+
+    async function handleSubmit(event) {
+      const form = event.target.closest('form[data-form]');
+      if (!form) return;
+      event.preventDefault();
+      const data = formDataObject(form);
+      const type = form.dataset.form;
+      try {
+        if (type === 'category') await saveCategory(data);
+        else if (type === 'product') await saveProduct(data);
+        else if (type === 'group') await saveOptionGroup(data);
+        else if (type === 'option') await saveOption(data);
+        else if (type === 'settings') await saveStoreSettings(data);
+        else if (type === 'reward') await saveReward(data);
+        else if (type === 'line-admin') await saveLineAdmin(data);
+        else if (type === 'cancel-order') await saveOrderStatus(data.orderId, 'CANCELLED', data.reason);
+        else if (type === 'adjust-points') await adjustPoints(data);
+        closeModal();
+      } catch (error) { toast(error.message || 'บันทึกข้อมูลไม่สำเร็จ', 'error'); }
+    }
+
+    function formDataObject(form) {
+      const formData = new FormData(form);
+      const result = {};
+      for (const [key, value] of formData.entries()) {
+        if (value instanceof File) continue;
+        result[key] = value;
+      }
+      $$('input[type="checkbox"][name]', form).forEach(input => { result[input.name] = input.checked; });
+      return result;
+    }
+
+    /* =====================================================================
+       6. PAGE RENDERERS
+       ===================================================================== */
+    function render() {
+      const content = $('#pageContent');
+      if (!content) return;
+      const activeElement = document.activeElement;
+      const activeId = activeElement && activeElement.id;
+      const selectionStart = activeElement && typeof activeElement.selectionStart === 'number' ? activeElement.selectionStart : null;
+      const renderers = {
+        overview: renderOverview, orders: renderOrders, menu: renderMenu,
+        options: renderOptions, customers: renderCustomers, points: renderPoints,
+        settings: renderSettings, staff: renderStaff
+      };
+      content.innerHTML = (renderers[state.page] || renderOverview)();
+      $('#soundToggle').classList.toggle('on', state.soundEnabled);
+      $('#soundLabel').textContent = state.soundEnabled ? 'เปิดเสียง' : 'ปิดเสียง';
+      $$('.nav-btn').forEach(button => button.classList.toggle('active', button.dataset.page === state.page));
+      $$('#mobileBottomNav button').forEach(button => button.classList.toggle('active', button.dataset.page === state.page));
+      if (activeId) { const restored = document.getElementById(activeId); if (restored) { restored.focus(); if (selectionStart !== null && typeof restored.setSelectionRange === 'function') restored.setSelectionRange(selectionStart, selectionStart); } }
+    }
+
+    function renderOverview() {
+      const stats = state.dashboard && state.dashboard.stats || {};
+      const chart = state.dashboard && state.dashboard.last7Days || [];
+      const maxRevenue = Math.max(1, ...chart.map(day => number(day.revenue)));
+      const recent = state.dashboard && state.dashboard.recentOrders || [];
+      const activeOrders = state.orders.filter(order => !['COMPLETED', 'CANCELLED'].includes(order.status)).slice(0, 6);
+      return `
+        <div class="page-head"><div><h2>สวัสดี, เจ๊อ้น 👋</h2><p>นี่คือภาพรวมการดำเนินงานของร้านในวันนี้</p></div><div class="page-actions"><button class="btn btn-soft" data-action="refresh-orders">↻ อัปเดตข้อมูล</button><button class="btn btn-primary" data-page="orders">ดูออเดอร์ทั้งหมด →</button></div></div>
+        <section class="stats-grid">
+          ${statCard('ยอดขายวันนี้', money(stats.todayRevenue), '฿', 'ยอดรวมออเดอร์ที่ไม่ถูกยกเลิก')}
+          ${statCard('ออเดอร์วันนี้', number(stats.todayOrders), '▤', 'จำนวนรายการสั่งซื้อทั้งหมด')}
+          ${statCard('ออเดอร์ใหม่', number(stats.newOrders), '✦', 'รอร้านรับคำสั่งซื้อ')}
+          ${statCard('กำลังปรุง', number(stats.preparingOrders), '♨', 'รายการที่อยู่ระหว่างทำอาหาร')}
+        </section>
+        <div class="dashboard-grid">
+          <section class="panel"><div class="panel-head"><div><h3>ยอดขาย 7 วันล่าสุด</h3><small>สรุปตามวันที่สร้างคำสั่งซื้อ</small></div><span class="pill pill-neutral">7 DAYS</span></div>
+            <div class="chart-bars">${chart.map(day => `<div class="chart-col"><em>${compactMoney(day.revenue)}</em><div class="chart-bar" style="height:${Math.max(3, number(day.revenue) / maxRevenue * 125)}px"></div><small>${thaiDateShort(day.date)}</small></div>`).join('') || '<div class="empty-state">ยังไม่มีข้อมูลยอดขาย</div>'}</div>
+          </section>
+          <section class="panel"><div class="panel-head"><div><h3>ออเดอร์ล่าสุด</h3><small>รายการที่เพิ่งเข้ามา</small></div><button class="btn btn-ghost btn-sm" data-page="orders">ดูทั้งหมด</button></div>
+            <div class="order-mini-list">${recent.length ? recent.slice(0, 6).map(order => `<div class="order-mini"><div><b>${esc(order.orderId)}</b><small>${esc(order.customerName || 'สมาชิก LINE')} · ${thaiDateTime(order.createdAt)}</small><span class="pill ${statusClass(order.status)}">${esc(STATUS[order.status] || order.status)}</span></div><div class="amount">${money(order.total)}</div></div>`).join('') : empty('ยังไม่มีคำสั่งซื้อ', 'รายการใหม่จะแสดงที่นี่')}</div>
+          </section>
+        </div>
+        <section class="panel" style="margin-top:16px"><div class="panel-head"><div><h3>ออเดอร์ที่กำลังดำเนินการ</h3><small>ตรวจสอบและอัปเดตสถานะได้จากหน้านี้</small></div><span class="pill pill-new">${activeOrders.length} รายการ</span></div>
+          ${activeOrders.length ? `<div class="table-wrap"><table><thead><tr><th>เลขออเดอร์</th><th>ลูกค้า</th><th>เวลาสั่ง</th><th>ประเภท</th><th>ยอดรวม</th><th>สถานะ</th><th></th></tr></thead><tbody>${activeOrders.map(orderRow).join('')}</tbody></table></div>` : empty('ไม่มีออเดอร์ค้าง', 'เมื่อมีลูกค้าสั่งอาหาร รายการจะแสดงที่นี่')}
+        </section>`;
+    }
+
+    function statCard(title, value, icon, foot) {
+      return `<div class="stat-card"><div class="stat-top"><span>${title}</span><span class="stat-icon">${icon}</span></div><div class="stat-value">${value}</div><div class="stat-foot">${foot}</div></div>`;
+    }
+
+    function renderOrders() {
+      let rows = state.orders || [];
+      if (state.orderStatus) rows = rows.filter(order => order.status === state.orderStatus);
+      if (state.orderDate) rows = rows.filter(order => { const d = new Date(order.createdAt); return !Number.isNaN(d.getTime()) && d.toLocaleDateString('en-CA', { timeZone: 'Asia/Bangkok' }) === state.orderDate; });
+      if (state.orderQuery) { const q = state.orderQuery.toLowerCase(); rows = rows.filter(order => [order.orderId, order.customerName, order.customerLineUserId].some(value => String(value || '').toLowerCase().includes(q))); }
+      return `<div class="page-head"><div><h2>คำสั่งซื้อ</h2><p>รายการสั่งอาหารจากลูกค้า LINE MINI APP</p></div><div class="page-actions"><button class="btn btn-ghost" data-action="export-orders">↓ ส่งออก CSV</button><button class="btn btn-primary" data-action="refresh-orders">↻ รีเฟรชรายการ</button></div></div>
+        <div class="toolbar"><input id="orderSearch" placeholder="ค้นหาเลขออเดอร์ / ชื่อลูกค้า / LINE ID" value="${attr(state.orderQuery)}"><select id="orderStatusFilter"><option value="">ทุกสถานะ</option>${Object.keys(STATUS).map(key => `<option value="${key}" ${state.orderStatus === key ? 'selected' : ''}>${STATUS[key]}</option>`).join('')}</select><input type="date" id="orderDateFilter" value="${attr(state.orderDate)}" title="กรองวันที่"><button class="btn btn-ghost btn-sm" data-action="refresh-orders">ล้าง/โหลดใหม่</button></div>
+        <section class="content-card">${rows.length ? `<div class="table-wrap"><table><thead><tr><th>เลขออเดอร์</th><th>ลูกค้า</th><th>เวลาสั่ง</th><th>ประเภทรับอาหาร</th><th>ชำระเงิน</th><th>ยอดรวม</th><th>สถานะ</th><th>จัดการ</th></tr></thead><tbody>${rows.map(orderRow).join('')}</tbody></table></div>` : empty('ไม่พบคำสั่งซื้อ', 'ลองเปลี่ยนตัวกรองหรือรอรายการใหม่')}</section>`;
+    }
+
+    function orderRow(order) {
+      return `<tr><td><b>${esc(order.orderId)}</b></td><td>${esc(order.customerName || 'สมาชิก LINE')}<small>${esc(shortLineId(order.customerLineUserId))}</small></td><td>${thaiDateTime(order.createdAt)}</td><td>${orderTypeLabel(order.orderType)}</td><td>${paymentLabel(order.paymentMethod)}<small>${paymentStatusLabel(order.paymentStatus)}</small></td><td><b>${money(order.total)}</b></td><td><span class="pill ${statusClass(order.status)}">${esc(STATUS[order.status] || order.status)}</span></td><td><button class="btn btn-ghost btn-sm" data-action="order-detail" data-id="${attr(order.orderId)}">รายละเอียด</button></td></tr>`;
+    }
+
+    function renderMenu() {
+      const catalog = state.catalog || { categories: [], products: [] };
+      const cats = catalog.categories || [];
+      const products = (catalog.products || []).filter(product => state.selectedCategory === 'all' || String(product.categoryId) === String(state.selectedCategory));
+      const activeTab = state.menuTab || 'products';
+      return `<div class="page-head"><div><h2>จัดการเมนูอาหาร</h2><p>เพิ่ม แก้ไข ราคา รูปภาพ และเปิดปิดการขาย</p></div><div class="page-actions"><button class="btn btn-ghost" data-action="new-category">＋ หมวดหมู่</button><button class="btn btn-primary" data-action="new-product">＋ เพิ่มเมนูอาหาร</button></div></div>
+        <div class="cat-row"><button class="cat-chip ${state.selectedCategory === 'all' ? 'active' : ''}" data-action="switch-category" data-id="all">ทั้งหมด</button>${cats.map(cat => `<button class="cat-chip ${state.selectedCategory === cat.categoryId ? 'active' : ''}" data-action="switch-category" data-id="${attr(cat.categoryId)}">${esc(cat.name)}</button>`).join('')}</div>
+        <div class="toolbar"><select id="categoryFilter"><option value="all">ทุกหมวดหมู่</option>${cats.map(cat => `<option value="${attr(cat.categoryId)}" ${state.selectedCategory === cat.categoryId ? 'selected' : ''}>${esc(cat.name)}</option>`).join('')}</select><span class="helper">${products.length} เมนู</span></div>
+        ${products.length ? `<div class="cards-grid">${products.map(product => `<article class="product-card"><div class="product-image">${product.imageUrl ? `<img src="${attr(product.imageUrl)}" alt="${attr(product.name)}" loading="lazy" onerror="this.remove()">` : '<span>🍜</span>'}</div><div class="product-info"><h4>${esc(product.name)}</h4><p>${esc(product.description || 'ไม่มีคำอธิบาย')}</p><div class="product-bottom"><span class="product-price">${money(product.price)}</span><span class="pill ${bool(product.isAvailable) ? 'pill-ready' : 'pill-cancelled'}">${bool(product.isAvailable) ? 'เปิดขาย' : 'ปิดขาย'}</span></div><div class="divider"></div><div class="table-actions"><button class="btn btn-ghost btn-sm" data-action="edit-product" data-id="${attr(product.productId)}">แก้ไข</button><button class="btn ${bool(product.isAvailable) ? 'btn-warning' : 'btn-soft'} btn-sm" data-action="toggle-product" data-id="${attr(product.productId)}" data-available="${bool(product.isAvailable)}">${bool(product.isAvailable) ? 'ปิดขาย' : 'เปิดขาย'}</button></div></div></article>`).join('')}</div>` : empty('ยังไม่มีเมนูในหมวดนี้', 'กดเพิ่มเมนูอาหารเพื่อเริ่มต้น')}
+        <section class="panel" style="margin-top:17px"><div class="panel-head"><h3>จัดการหมวดหมู่</h3><small>กดแก้ไขเพื่อเปลี่ยนชื่อและลำดับ</small></div>${cats.length ? cats.map(cat => `<div class="order-mini"><div><b>${esc(cat.name)}</b><small>ลำดับ ${number(cat.sortOrder)} · ${bool(cat.isActive) ? 'เปิดใช้งาน' : 'ปิดใช้งาน'}</small></div><button class="btn btn-ghost btn-sm" data-action="edit-category" data-id="${attr(cat.categoryId)}">แก้ไข</button></div>`).join('') : empty('ยังไม่มีหมวดหมู่', 'เพิ่มหมวดหมู่ก่อนสร้างเมนู')}</section>`;
+    }
+
+    function renderOptions() {
+      const groups = state.catalog && state.catalog.optionGroups || [];
+      const options = state.catalog && state.catalog.options || [];
+      const links = state.catalog && state.catalog.productOptions || [];
+      const products = state.catalog && state.catalog.products || [];
+      return `<div class="page-head"><div><h2>ตัวเลือกอาหาร</h2><p>จัดการกลุ่มเลือกเส้น น้ำซุป ความเผ็ด และท็อปปิง</p></div><div class="page-actions"><button class="btn btn-primary" data-action="new-group">＋ เพิ่มกลุ่มตัวเลือก</button></div></div>
+        <div class="cards-grid">${groups.map(group => {
+          const groupOptions = options.filter(option => String(option.groupId) === String(group.groupId));
+          const linked = links.filter(link => String(link.groupId) === String(group.groupId)).map(link => products.find(product => String(product.productId) === String(link.productId))).filter(Boolean);
+          return `<section class="group-card"><div class="panel-head"><div><h4>${esc(group.name)}</h4><p>${group.selectionType === 'multiple' ? 'เลือกได้หลายรายการ' : 'เลือกได้ 1 รายการ'} · ${bool(group.isRequired) ? 'จำเป็นต้องเลือก' : 'ไม่บังคับ'}</p></div><button class="btn btn-ghost btn-sm" data-action="edit-group" data-id="${attr(group.groupId)}">แก้ไขกลุ่ม</button></div><div>${groupOptions.map(option => `<div class="order-mini"><div><b>${esc(option.name)}</b><small>${money(option.extraPrice)} · ${bool(option.isActive) ? 'เปิด' : 'ปิด'}</small></div></div>`).join('') || '<small class="helper">ยังไม่มีตัวเลือก</small>'}</div><div class="divider"></div><small class="helper">ใช้กับ: ${linked.length ? linked.map(p => esc(p.name)).join(', ') : 'ยังไม่ได้ผูกกับเมนู'}</small><div class="table-actions" style="margin-top:12px"><button class="btn btn-soft btn-sm" data-action="new-option" data-group-id="${attr(group.groupId)}">＋ เพิ่มตัวเลือก</button><button class="btn btn-ghost btn-sm" data-action="link-group" data-id="${attr(group.groupId)}">ผูกกับเมนู</button></div></section>`;
+        }).join('')}</div>
+        ${groups.length ? '' : empty('ยังไม่มีกลุ่มตัวเลือก', 'เพิ่มกลุ่ม เช่น เลือกเส้น หรือเลือกน้ำซุป')}
+        <p class="helper" style="margin-top:14px">หมายเหตุ: API รุ่นปัจจุบันรองรับการผูกกลุ่มตัวเลือกเข้ากับเมนู แต่ยังไม่มีคำสั่งถอดการผูก หากต้องการลบความสัมพันธ์เดิมจะต้องเพิ่ม API ฝั่ง Code.gs</p>`;
+    }
+
+    function renderCustomers() {
+      const customers = state.customers || [];
+      return `<div class="page-head"><div><h2>สมาชิก</h2><p>ลูกค้าที่เข้าใช้งานผ่าน LINE MINI APP</p></div><div class="page-actions"><button class="btn btn-ghost" data-action="refresh-orders">↻ รีเฟรช</button></div></div>
+        <div class="toolbar"><input id="customerSearch" placeholder="ค้นหาชื่อสมาชิกหรือ LINE User ID" value="${attr(state.customerQuery)}"><span class="helper">${customers.length} สมาชิก</span></div>
+        <section class="content-card">${customers.length ? `<div class="table-wrap"><table><thead><tr><th>สมาชิก</th><th>LINE User ID</th><th>แต้มคงเหลือ</th><th>อัปเดตล่าสุด</th><th></th></tr></thead><tbody>${customers.map(customer => `<tr><td><b>${esc(customer.displayName || 'สมาชิก LINE')}</b><small>${thaiDateTime(customer.createdAt)}</small></td><td><code>${esc(shortLineId(customer.lineUserId))}</code></td><td><b>${number(customer.points)} แต้ม</b></td><td>${thaiDateTime(customer.updatedAt)}</td><td><button class="btn btn-ghost btn-sm" data-action="customer-detail" data-id="${attr(customer.lineUserId)}">ดูข้อมูล</button></td></tr>`).join('')}</tbody></table></div>` : empty('ยังไม่พบสมาชิก', 'ข้อมูลจะแสดงเมื่อลูกค้าเข้าใช้งานผ่าน LINE')}</section>`;
+    }
+
+    function renderPoints() {
+      const settings = state.pointSettings || {};
+      const tx = state.pointTransactions || [];
+      const rewards = state.rewards || [];
+      const redemptions = state.redemptions || [];
+      const customerMap = new Map((state.customers || []).map(c => [c.lineUserId, c.displayName]));
+      return `<div class="page-head"><div><h2>ระบบสมาชิกและสะสมแต้ม</h2><p>กำหนดเงื่อนไขคะแนน สร้าง QR และตรวจสอบธุรกรรม</p></div><div class="page-actions"><button class="btn btn-ghost" data-action="new-reward">＋ เพิ่มของรางวัล</button></div></div>
+        <div class="settings-grid">
+          <section class="setting-section"><div class="panel-head"><h3>เงื่อนไขการสะสมแต้ม</h3><span class="pill ${bool(settings.pointsEnabled) ? 'pill-ready' : 'pill-cancelled'}">${bool(settings.pointsEnabled) ? 'เปิดใช้งาน' : 'ปิดใช้งาน'}</span></div>
+            <form id="pointSettingsForm">
+              <label class="check-row"><input type="checkbox" name="pointsEnabled" ${bool(settings.pointsEnabled) ? 'checked' : ''}> เปิดระบบสะสมแต้ม</label>
+              <div class="form-grid"><div class="field"><label>ยอดซื้อทุกกี่บาท</label><input name="bahtPerPoint" type="number" min="1" step="1" value="${attr(settings.bahtPerPoint || 25)}" required></div><div class="field"><label>ได้รับกี่แต้มต่อหน่วย</label><input name="pointsPerUnit" type="number" min="1" step="1" value="${attr(settings.pointsPerUnit || 1)}" required></div><div class="field"><label>ยอดซื้อขั้นต่ำ (บาท)</label><input name="minimumSpend" type="number" min="0" step="1" value="${attr(settings.minimumSpend || 25)}"></div><div class="field"><label>การคำนวณเศษเงิน</label><select name="roundingMode"><option value="floor" ${settings.roundingMode === 'floor' ? 'selected' : ''}>ปัดเศษลง</option><option value="carry" ${settings.roundingMode === 'carry' ? 'selected' : ''}>ทบยอดเศษเงิน</option></select></div></div>
+              <p class="helper">ระบบรุ่นนี้ยังไม่รองรับวันหมดอายุแต้ม จึงกำหนดเป็นไม่มีวันหมดอายุ (0 เดือน)</p>
+              <button class="btn btn-primary" type="button" data-action="save-point-settings">บันทึกเงื่อนไขแต้ม</button>
+            </form>
+          </section>
+          <section class="setting-section"><h3>สะสมแต้มหน้าร้าน</h3><p class="helper">กรอกยอดซื้อ แล้วสร้าง QR ให้ลูกค้าสแกน ระบบจะบันทึกแต้มเมื่อสมาชิกสแกนสำเร็จ</p>
+            <div class="field"><label>ยอดซื้อของลูกค้า (บาท)</label><input id="storeQrAmount" type="number" min="1" step="0.01" placeholder="เช่น 150"></div>
+            <button class="btn btn-primary btn-block" data-action="create-store-qr">สร้าง QR ให้ลูกค้าสแกน</button>
+            <div class="divider"></div>
+            <div class="field"><label>สแกน QR ของลูกค้า</label><p class="helper">กรอกยอดซื้อก่อนเปิดกล้องสแกน QR ส่วนตัวของลูกค้า</p><input id="scanCustomerAmount" type="number" min="1" step="0.01" placeholder="ยอดซื้อ (บาท)"></div>
+            <button class="btn btn-soft btn-block" data-action="open-customer-scanner">▣ เปิดกล้องสแกน QR ลูกค้า</button>
+          </section>
+        </div>
+        <section class="panel" style="margin-top:15px"><div class="panel-head"><div><h3>ของรางวัลที่เปิดแลก</h3><small>รายการที่ลูกค้าเห็นในเมนูสะสมแต้ม</small></div><button class="btn btn-ghost btn-sm" data-action="new-reward">＋ เพิ่มรางวัล</button></div>
+          ${rewards.length ? `<div class="reward-grid">${rewards.map(reward => `<article class="reward-card"><h4>${esc(reward.name)}</h4><p>${esc(reward.description || 'ไม่มีรายละเอียด')}</p><div class="divider"></div><div class="product-bottom"><b>${number(reward.pointsCost)} แต้ม</b><span class="helper">${number(reward.stock) < 0 ? 'ไม่จำกัด' : 'คงเหลือ ' + number(reward.stock)}</span></div><button class="btn btn-ghost btn-sm" style="margin-top:10px" data-action="edit-reward" data-id="${attr(reward.rewardId)}">แก้ไขรางวัล</button></article>`).join('')}</div>` : empty('ยังไม่มีของรางวัล', 'เพิ่มของรางวัลเพื่อให้ลูกค้าใช้แต้มแลก')}
+        </section>
+        <section class="panel" style="margin-top:15px"><div class="panel-head"><div><h3>ประวัติธุรกรรมแต้ม</h3><small>รายการเพิ่ม ลด และแลกแต้มล่าสุด</small></div><span class="pill pill-neutral">${tx.length} รายการ</span></div>
+          ${tx.length ? `<div class="table-wrap"><table><thead><tr><th>วันที่</th><th>สมาชิก</th><th>ประเภทธุรกรรม</th><th>รายละเอียด</th><th>ยอดซื้อ</th><th>แต้ม</th></tr></thead><tbody>${tx.slice(0,100).map(item => `<tr><td>${thaiDateTime(item.createdAt)}</td><td>${esc(customerMap.get(item.lineUserId) || shortLineId(item.lineUserId))}</td><td>${esc(item.type || '-')}</td><td>${esc(item.description || '-')}</td><td>${money(item.amountSpent || 0)}</td><td><b class="${number(item.pointsChange) >= 0 ? 'text-positive' : 'text-negative'}">${number(item.pointsChange) > 0 ? '+' : ''}${number(item.pointsChange)}</b></td></tr>`).join('')}</tbody></table></div>` : empty('ยังไม่มีธุรกรรมแต้ม', 'เมื่อมีการสะสมหรือแลกแต้ม รายการจะแสดงที่นี่')}
+        </section>
+        <section class="panel" style="margin-top:15px"><div class="panel-head"><div><h3>คำขอแลกรางวัล</h3><small>ตรวจสอบและเปลี่ยนสถานะการแลก</small></div></div>
+          ${redemptions.length ? `<div class="table-wrap"><table><thead><tr><th>วันที่</th><th>สมาชิก</th><th>ของรางวัล</th><th>แต้มที่ใช้</th><th>สถานะ</th><th>จัดการ</th></tr></thead><tbody>${redemptions.map(item => `<tr><td>${thaiDateTime(item.createdAt)}</td><td>${esc(customerMap.get(item.lineUserId) || shortLineId(item.lineUserId))}</td><td>${esc(item.rewardName)}</td><td>${number(item.pointsCost)}</td><td><span class="pill ${item.status === 'COMPLETED' ? 'pill-ready' : item.status === 'REJECTED' ? 'pill-cancelled' : 'pill-new'}">${esc(item.status)}</span></td><td><div class="table-actions">${item.status === 'PENDING' || item.status === 'APPROVED' ? `<button class="btn btn-soft btn-sm" data-action="redemption-status" data-id="${attr(item.redemptionId)}" data-status="COMPLETED">สำเร็จ</button><button class="btn btn-danger btn-sm" data-action="redemption-status" data-id="${attr(item.redemptionId)}" data-status="REJECTED">ปฏิเสธ</button>` : '—'}</div></td></tr>`).join('')}</tbody></table></div>` : empty('ยังไม่มีคำขอแลกรางวัล', 'คำขอแลกของลูกค้าจะแสดงที่นี่')}
+        </section>`;
+    }
+
+    function renderSettings() {
+      const s = state.settings || {};
+      return `<div class="page-head"><div><h2>ตั้งค่าร้านค้า</h2><p>ข้อมูลร้าน เวลาเปิดปิด และช่องทางรับชำระเงิน</p></div></div>
+        <form data-form="settings">
+          <div class="settings-grid">
+            <section class="setting-section"><h3>ข้อมูลร้าน</h3><div class="form-grid"><div class="field span-2"><label>ชื่อร้าน</label><input name="storeName" value="${attr(s.storeName || 'ก๋วยเตี๋ยวโบราณ by เจ๊อ้น')}"></div><div class="field span-2"><label>คำอธิบายร้าน</label><textarea name="storeDescription">${esc(s.storeDescription || '')}</textarea></div><div class="field"><label>เบอร์โทรศัพท์</label><input name="storePhone" value="${attr(s.storePhone || '')}"></div><div class="field"><label>เวลาเปิด</label><input type="time" name="openTime" value="${attr(s.openTime || '08:00')}"></div><div class="field"><label>เวลาเปิดรับถึง</label><input type="time" name="closeTime" value="${attr(s.closeTime || '17:00')}"></div><div class="field span-2"><label>ที่อยู่ร้าน</label><textarea name="storeAddress">${esc(s.storeAddress || '')}</textarea></div></div></section>
+            <section class="setting-section"><h3>สถานะและรูปแบบบริการ</h3>
+              ${checkField('isStoreOpen', 'เปิดรับออเดอร์', s.isStoreOpen)}
+              ${checkField('allowDineIn', 'รับประทานที่ร้าน', s.allowDineIn)}
+              ${checkField('allowTakeaway', 'ซื้อกลับบ้าน', s.allowTakeaway)}
+              ${checkField('allowDelivery', 'จัดส่ง', s.allowDelivery)}
+              <p class="helper">เมื่อปิดรับออเดอร์ ลูกค้าจะไม่สามารถยืนยันคำสั่งซื้อใหม่ได้</p>
+            </section>
+            <section class="setting-section"><h3>บัญชีพร้อมเพย์</h3><div class="form-grid"><div class="field span-2"><label>ชื่อบัญชี</label><input name="promptPayName" value="${attr(s.promptPayName || '')}"></div><div class="field span-2"><label>หมายเลขพร้อมเพย์</label><input name="promptPayId" value="${attr(s.promptPayId || '')}"></div><div class="field span-2"><label>URL รูป QR พร้อมเพย์</label><input name="promptPayQrUrl" value="${attr(s.promptPayQrUrl || '')}" placeholder="https://..."><small class="helper">รูป QR สำหรับให้ลูกค้าดูในหน้า Checkout ปัจจุบันตั้งค่าด้วย URL</small></div></div></section>
+            <section class="setting-section"><h3>การแจ้งเตือน</h3><div class="check-row"><input type="checkbox" checked disabled><span>ส่ง Flex Message ไปยังกลุ่ม LINE เมื่อมีออเดอร์ใหม่ (ตั้งค่าจาก Script Properties)</span></div><div class="check-row"><input type="checkbox" checked disabled><span>แจ้งลูกค้าเมื่อร้านเปลี่ยนสถานะออเดอร์</span></div><p class="helper">การส่งข้อความ LINE ต้องตั้งค่า LINE_CHANNEL_ACCESS_TOKEN และ LINE_GROUP_ID ใน Apps Script</p></section>
+          </div>
+          <div style="display:flex;justify-content:flex-end;margin-top:16px"><button class="btn btn-primary" type="submit">บันทึกการตั้งค่าร้าน</button></div>
+        </form>`;
+    }
+
+    function checkField(name, label, value) { return `<label class="check-row"><input type="checkbox" name="${name}" ${bool(value) ? 'checked' : ''}> ${label}</label>`; }
+
+    function renderStaff() {
+      const staff = state.lineAdmins || [];
+      return `<div class="page-head"><div><h2>ผู้ดูแล LINE</h2><p>กำหนด LINE User ID ที่อนุญาตให้กดปุ่มปรับสถานะจากกลุ่มร้าน</p></div><div class="page-actions"><button class="btn btn-primary" data-action="add-line-admin">＋ เพิ่มผู้ดูแล LINE</button></div></div>
+        <div class="panel"><div class="helper">เจ้าของร้านที่ Login Dashboard ได้ สามารถจัดการรายชื่อผู้ดูแลได้ รายชื่อที่เพิ่มต้องเป็น LINE User ID จริง และต้องให้บัญชีนั้นเคยมีปฏิสัมพันธ์กับ OA ตามเงื่อนไขของ LINE</div><div class="divider"></div>
+          ${staff.length ? `<div class="table-wrap"><table><thead><tr><th>LINE User ID</th><th>ชื่อแสดงผล</th><th>บทบาท</th><th>สถานะ</th></tr></thead><tbody>${staff.map(user => `<tr><td><code>${esc(shortLineId(user.lineUserId))}</code></td><td>${esc(user.displayName || '-')}</td><td>${esc(user.role || 'STAFF')}</td><td><span class="pill ${bool(user.isActive) ? 'pill-ready' : 'pill-neutral'}">${bool(user.isActive) ? 'ใช้งาน' : 'ปิดใช้งาน'}</span></td></tr>`).join('')}</tbody></table></div>` : empty('ยังไม่มีผู้ดูแล LINE เพิ่มเติม', 'เจ้าของร้านยังสามารถจัดการผ่าน Dashboard ได้')}
+        </div>`;
+    }
+
+    /* =====================================================================
+       7. ORDER DETAILS AND STATUS WORKFLOW
+       ===================================================================== */
+    async function openOrderDetail(orderId) {
+      try {
+        const order = await apiGuard('admin.getOrder', { orderId });
+        const actions = nextStatusActions(order.status, order.orderId);
+        const itemsHtml = (order.items || []).map(item => `<div class="order-mini"><div><b>${esc(item.productName)} × ${number(item.quantity)}</b><small>${(item.options || []).map(option => esc(option.optionName)).join(' · ') || 'ไม่มีตัวเลือก'}${item.note ? ' · หมายเหตุ: ' + esc(item.note) : ''}</small></div><div class="amount">${money(item.lineTotal)}</div></div>`).join('');
+        const historyHtml = (order.statusHistory || []).map(history => `<div class="order-mini"><div><b>${esc(STATUS[history.newStatus] || history.newStatus)}</b><small>${thaiDateTime(history.createdAt)} · ${esc(history.actorType || '')}</small></div></div>`).join('');
+        showModal('รายละเอียดออเดอร์ ' + order.orderId, `
+          <div class="panel-head"><span class="pill ${statusClass(order.status)}">${esc(STATUS[order.status] || order.status)}</span><b style="font-family:Manrope;font-size:21px">${money(order.total)}</b></div>
+          <div class="form-grid"><div><small class="helper">ลูกค้า</small><b>${esc(order.customerName || 'สมาชิก LINE')}</b></div><div><small class="helper">เวลาสั่ง</small><b>${thaiDateTime(order.createdAt)}</b></div><div><small class="helper">วิธีรับอาหาร</small><b>${orderTypeLabel(order.orderType)} ${order.tableNumber ? '· โต๊ะ ' + esc(order.tableNumber) : ''}</b></div><div><small class="helper">การชำระเงิน</small><b>${paymentLabel(order.paymentMethod)} · ${paymentStatusLabel(order.paymentStatus)}</b></div></div>
+          <div class="divider"></div><h4>รายการอาหาร</h4>${itemsHtml || '<small class="helper">ไม่มีรายการสินค้า</small>'}
+          <div class="divider"></div><div class="order-mini"><b>ยอดรวม</b><b>${money(order.subtotal || order.total)}</b></div><div class="order-mini"><b>ส่วนลด</b><b>${money(order.discount || 0)}</b></div><div class="order-mini"><b>ยอดสุทธิ</b><b>${money(order.total)}</b></div>
+          ${order.note ? `<div class="divider"></div><b>หมายเหตุจากลูกค้า</b><p>${esc(order.note)}</p>` : ''}
+          <div class="divider"></div><h4>การชำระเงิน</h4><div class="table-actions" style="flex-wrap:wrap;margin-top:8px"><button class="btn btn-soft btn-sm" data-action="payment-status" data-id="${attr(order.orderId)}" data-status="PAID">ยืนยันชำระแล้ว</button><button class="btn btn-warning btn-sm" data-action="payment-status" data-id="${attr(order.orderId)}" data-status="REJECTED">ปฏิเสธการชำระ</button><button class="btn btn-ghost btn-sm" data-action="payment-status" data-id="${attr(order.orderId)}" data-status="PENDING">รอตรวจสอบ</button></div>
+          ${order.payment && order.payment.slipUrl ? `<p><a href="${attr(order.payment.slipUrl)}" target="_blank" rel="noopener">เปิดดูสลิปที่แนบ</a></p>` : ''}
+          <div class="divider"></div><h4>ประวัติสถานะ</h4>${historyHtml || '<small class="helper">ยังไม่มีประวัติ</small>'}
+          <div class="divider"></div><h4>ปรับสถานะออเดอร์</h4><div class="table-actions" style="flex-wrap:wrap;margin-top:10px">${actions || '<span class="helper">ไม่มีสถานะถัดไป</span>'}</div>`, { wide: true });
+      } catch (error) { toast(error.message || 'เปิดรายละเอียดไม่สำเร็จ', 'error'); }
+    }
+
+    function nextStatusActions(status, orderId) {
+      const next = { NEW: ['ACCEPTED', 'CANCELLED'], ACCEPTED: ['PREPARING', 'CANCELLED'], PREPARING: ['READY', 'CANCELLED'], READY: ['COMPLETED', 'CANCELLED'] }[status] || [];
+      return next.map(key => `<button class="btn ${key === 'CANCELLED' ? 'btn-danger' : 'btn-primary'} btn-sm" data-action="order-status" data-id="${attr(orderId)}" data-status="${key}">${key === 'CANCELLED' ? 'ยกเลิกออเดอร์' : STATUS[key]}</button>`).join('');
+    }
+
+    async function changeOrderStatus(orderId, status) {
+      if (status === 'CANCELLED') {
+        showModal('ยกเลิกคำสั่งซื้อ', `<form data-form="cancel-order"><input type="hidden" name="orderId" value="${attr(orderId)}"><div class="field"><label>เหตุผลการยกเลิก</label><textarea name="reason" required placeholder="ระบุเหตุผลที่ยกเลิก"></textarea></div><p class="helper">ระบบจะบันทึกเหตุผลและแจ้งลูกค้าผ่าน LINE</p><div class="modal-foot"><button type="button" class="btn btn-ghost" data-action="close-modal">กลับ</button><button class="btn btn-danger" type="submit">ยืนยันยกเลิก</button></div></form>`);
+        return;
+      }
+      const confirmed = await confirmAction('เปลี่ยนสถานะเป็น ' + (STATUS[status] || status) + '?', 'ระบบจะบันทึกสถานะและส่ง Flex Message แจ้งลูกค้าอัตโนมัติ');
+      if (!confirmed) return;
+      await saveOrderStatus(orderId, status, '');
+    }
+
+    async function saveOrderStatus(orderId, status, reason) {
+      try {
+        await apiGuard('admin.updateOrderStatus', { orderId, status, note: reason || '', cancelReason: reason || '' });
+        toast('อัปเดตสถานะออเดอร์แล้ว', 'success', 'ระบบส่งคำขอแจ้งเตือน LINE แล้ว');
+        closeModal(); await refreshOverview();
+        if (state.page !== 'overview') await loadOrders();
+        render();
+      } catch (error) { toast(error.message || 'เปลี่ยนสถานะไม่สำเร็จ', 'error'); }
+    }
+
+    async function changePaymentStatus(orderId, status) {
+      const confirmed = await confirmAction('เปลี่ยนสถานะชำระเงิน?', 'ยืนยันตั้งค่าสถานะเป็น ' + status);
+      if (!confirmed) return;
+      try {
+        await apiGuard('admin.updatePaymentStatus', { orderId, status });
+        toast('อัปเดตสถานะชำระเงินแล้ว');
+        closeModal(); await refreshOverview(); render();
+      } catch (error) { toast(error.message || 'อัปเดตการชำระเงินไม่สำเร็จ', 'error'); }
+    }
+
+    /* =====================================================================
+       8. CATALOG / OPTION MANAGEMENT
+       ===================================================================== */
+    async function saveCategory(data) {
+      await apiGuard('admin.saveCategory', { category: {
+        categoryId: data.categoryId || '', name: data.name, sortOrder: number(data.sortOrder), isActive: data.isActive === true
+      } });
+      toast('บันทึกหมวดหมู่แล้ว'); await loadCatalog(); render();
+    }
+
+    function openCategoryModal(categoryId = '') {
+      const category = (state.catalog.categories || []).find(item => String(item.categoryId) === String(categoryId)) || {};
+      showModal(categoryId ? 'แก้ไขหมวดหมู่' : 'เพิ่มหมวดหมู่', `<form data-form="category"><input type="hidden" name="categoryId" value="${attr(category.categoryId || '')}"><div class="field"><label>ชื่อหมวดหมู่</label><input name="name" required maxlength="100" value="${attr(category.name || '')}" placeholder="เช่น ก๋วยเตี๋ยว"></div><div class="field"><label>ลำดับการแสดงผล</label><input name="sortOrder" type="number" value="${attr(category.sortOrder || 0)}"></div><label class="check-row"><input type="checkbox" name="isActive" ${category.isActive === undefined || bool(category.isActive) ? 'checked' : ''}> เปิดใช้งานหมวดหมู่นี้</label><div class="modal-foot"><button type="button" class="btn btn-ghost" data-action="close-modal">ยกเลิก</button><button class="btn btn-primary" type="submit">บันทึก</button></div></form>`);
+    }
+
+    async function saveProduct(data) {
+      const product = {
+        productId: data.productId || '', categoryId: data.categoryId, name: data.name,
+        description: data.description || '', price: number(data.price), imageUrl: data.imageUrl || '',
+        isFeatured: data.isFeatured === true, isPopular: data.isPopular === true,
+        isAvailable: data.isAvailable === true, sortOrder: number(data.sortOrder)
+      };
+      const saved = await apiGuard('admin.saveProduct', { product });
+      const selectedGroups = Array.from(document.querySelectorAll('input[name="linkedGroups"]:checked')).map(input => input.value);
+      for (const groupId of selectedGroups) {
+        await apiGuard('admin.linkProductOption', { productId: saved.productId, groupId, sortOrder: 0 });
+      }
+      toast('บันทึกเมนูอาหารแล้ว'); await loadCatalog(); render();
+    }
+
+    function openProductModal(productId = '') {
+      const product = (state.catalog.products || []).find(item => String(item.productId) === String(productId)) || {};
+      const categories = state.catalog.categories || [];
+      const groups = state.catalog.optionGroups || [];
+      const links = state.catalog.productOptions || [];
+      const linked = links.filter(link => String(link.productId) === String(productId)).map(link => String(link.groupId));
+      showModal(productId ? 'แก้ไขเมนูอาหาร' : 'เพิ่มเมนูอาหาร', `<form data-form="product">
+        <input type="hidden" name="productId" value="${attr(product.productId || '')}">
+        <div class="form-grid"><div class="field span-2"><label>ชื่อเมนู</label><input name="name" required maxlength="120" value="${attr(product.name || '')}"></div>
+        <div class="field"><label>หมวดหมู่</label><select name="categoryId" required><option value="">เลือกหมวดหมู่</option>${categories.map(category => `<option value="${attr(category.categoryId)}" ${product.categoryId === category.categoryId ? 'selected' : ''}>${esc(category.name)}</option>`).join('')}</select></div>
+        <div class="field"><label>ราคา (บาท)</label><input name="price" type="number" min="0" step="0.01" required value="${attr(product.price === undefined ? '' : product.price)}"></div>
+        <div class="field span-2"><label>รายละเอียด</label><textarea name="description" maxlength="1000">${esc(product.description || '')}</textarea></div>
+        <div class="field span-2"><label>รูปภาพเมนู</label><input id="productImageFile" type="file" accept="image/*"><input type="hidden" name="imageUrl" id="productImageUrl" value="${attr(product.imageUrl || '')}"><small class="helper" id="imageUploadStatus">${product.imageUrl ? 'มีรูปภาพแล้ว สามารถเลือกไฟล์ใหม่เพื่อแทนที่' : 'เลือกรูปจากเครื่อง ระบบจะอัปโหลดไปยัง ImgBB'}</small>${product.imageUrl ? `<img src="${attr(product.imageUrl)}" style="width:100px;height:80px;object-fit:cover;border-radius:10px;margin-top:8px" alt="รูปเมนู">` : ''}</div>
+        <div class="field"><label>ลำดับการแสดงผล</label><input name="sortOrder" type="number" value="${attr(product.sortOrder || 0)}"></div></div>
+        <div class="divider"></div><label class="check-row"><input type="checkbox" name="isAvailable" ${product.isAvailable === undefined || bool(product.isAvailable) ? 'checked' : ''}> เปิดขายเมนูนี้</label>
+        <label class="check-row"><input type="checkbox" name="isFeatured" ${bool(product.isFeatured) ? 'checked' : ''}> เมนูแนะนำ</label>
+        <label class="check-row"><input type="checkbox" name="isPopular" ${bool(product.isPopular) ? 'checked' : ''}> เมนูขายดี</label>
+        <div class="divider"></div><b>กลุ่มตัวเลือกของเมนูนี้</b><p class="helper">เลือกกลุ่มใหม่เพื่อผูกกับเมนู ระบบรุ่นนี้ยังไม่สามารถถอดกลุ่มที่ผูกไว้ก่อนหน้า</p>
+        ${groups.map(group => `<label class="check-row"><input type="checkbox" name="linkedGroups" value="${attr(group.groupId)}" ${linked.includes(String(group.groupId)) ? 'checked disabled' : ''}> ${esc(group.name)} ${linked.includes(String(group.groupId)) ? '(ผูกแล้ว)' : ''}</label>`).join('')}
+        <div class="modal-foot"><button type="button" class="btn btn-ghost" data-action="close-modal">ยกเลิก</button><button type="submit" class="btn btn-primary">บันทึกเมนู</button></div></form>`, { wide: true });
+    }
+
+    async function uploadSelectedImage(file) {
+      if (!file) return;
+      if (!file.type.startsWith('image/')) { toast('กรุณาเลือกไฟล์รูปภาพ', 'error'); return; }
+      if (file.size > 5 * 1024 * 1024) { toast('รูปภาพต้องมีขนาดไม่เกิน 5 MB', 'error'); return; }
+      const status = $('#imageUploadStatus');
+      if (status) status.textContent = 'กำลังอัปโหลดรูปภาพ...';
+      try {
+        const base64 = await fileToDataUrl(file);
+        const result = await apiGuard('admin.uploadImage', { imageBase64: base64, fileName: file.name });
+        $('#productImageUrl').value = result.url;
+        if (status) status.textContent = 'อัปโหลดสำเร็จ ✓';
+        toast('อัปโหลดรูปภาพแล้ว');
+      } catch (error) { if (status) status.textContent = error.message; toast(error.message || 'อัปโหลดรูปไม่สำเร็จ', 'error'); }
+    }
+
+    async function toggleProduct(productId, current) {
+      try {
+        await apiGuard('admin.setProductAvailability', { productId, isAvailable: !current });
+        toast(!current ? 'เปิดขายเมนูแล้ว' : 'ปิดขายเมนูแล้ว'); await loadCatalog(); render();
+      } catch (error) { toast(error.message, 'error'); }
+    }
+
+    async function saveOptionGroup(data) {
+      await apiGuard('admin.saveOptionGroup', { group: {
+        groupId: data.groupId || '', name: data.name, selectionType: data.selectionType,
+        minSelect: number(data.minSelect), maxSelect: number(data.maxSelect), isRequired: data.isRequired === true,
+        isActive: data.isActive === true, sortOrder: number(data.sortOrder)
+      } });
+      toast('บันทึกกลุ่มตัวเลือกแล้ว'); await loadCatalog(); render();
+    }
+
+    function openGroupModal(groupId = '') {
+      const group = (state.catalog.optionGroups || []).find(item => String(item.groupId) === String(groupId)) || {};
+      showModal(groupId ? 'แก้ไขกลุ่มตัวเลือก' : 'เพิ่มกลุ่มตัวเลือก', `<form data-form="group"><input type="hidden" name="groupId" value="${attr(group.groupId || '')}">
+        <div class="field"><label>ชื่อกลุ่มตัวเลือก</label><input name="name" required value="${attr(group.name || '')}" placeholder="เช่น เลือกเส้น"></div>
+        <div class="form-grid"><div class="field"><label>รูปแบบการเลือก</label><select name="selectionType"><option value="single" ${group.selectionType !== 'multiple' ? 'selected' : ''}>เลือกได้ 1 รายการ</option><option value="multiple" ${group.selectionType === 'multiple' ? 'selected' : ''}>เลือกได้หลายรายการ</option></select></div><div class="field"><label>เลือกได้สูงสุด</label><input name="maxSelect" type="number" min="1" max="30" value="${attr(group.maxSelect || 1)}"></div><div class="field"><label>จำนวนขั้นต่ำ</label><input name="minSelect" type="number" min="0" max="30" value="${attr(group.minSelect || 0)}"></div><div class="field"><label>ลำดับ</label><input name="sortOrder" type="number" value="${attr(group.sortOrder || 0)}"></div></div>
+        <label class="check-row"><input type="checkbox" name="isRequired" ${bool(group.isRequired) ? 'checked' : ''}> บังคับให้ลูกค้าเลือก</label><label class="check-row"><input type="checkbox" name="isActive" ${group.isActive === undefined || bool(group.isActive) ? 'checked' : ''}> เปิดใช้งาน</label>
+        <div class="modal-foot"><button type="button" class="btn btn-ghost" data-action="close-modal">ยกเลิก</button><button class="btn btn-primary" type="submit">บันทึก</button></div></form>`);
+    }
+
+    async function saveOption(data) {
+      await apiGuard('admin.saveOption', { option: {
+        optionId: data.optionId || '', groupId: data.groupId, name: data.name,
+        extraPrice: number(data.extraPrice), isActive: data.isActive === true, sortOrder: number(data.sortOrder)
+      } });
+      toast('บันทึกตัวเลือกแล้ว'); await loadCatalog(); render();
+    }
+
+    function openOptionModal(groupId = '') {
+      showModal('เพิ่มตัวเลือก', `<form data-form="option"><input type="hidden" name="groupId" value="${attr(groupId)}"><div class="field"><label>กลุ่มตัวเลือก</label><select name="groupId" required>${(state.catalog.optionGroups || []).map(group => `<option value="${attr(group.groupId)}" ${group.groupId === groupId ? 'selected' : ''}>${esc(group.name)}</option>`).join('')}</select></div><div class="field"><label>ชื่อตัวเลือก</label><input name="name" required placeholder="เช่น เส้นเล็ก"></div><div class="field"><label>ราคาเพิ่ม (บาท)</label><input name="extraPrice" type="number" min="0" step="0.01" value="0"></div><div class="field"><label>ลำดับ</label><input name="sortOrder" type="number" value="0"></div><label class="check-row"><input type="checkbox" name="isActive" checked> เปิดใช้งาน</label><div class="modal-foot"><button type="button" class="btn btn-ghost" data-action="close-modal">ยกเลิก</button><button class="btn btn-primary" type="submit">เพิ่มตัวเลือก</button></div></form>`);
+    }
+
+    function openLinkGroupModal(groupId) {
+      const group = (state.catalog.optionGroups || []).find(item => item.groupId === groupId);
+      const links = state.catalog.productOptions || [];
+      const products = (state.catalog.products || []).filter(product => !links.some(link => String(link.productId) === String(product.productId) && String(link.groupId) === String(groupId)));
+      showModal('ผูกกลุ่มตัวเลือกกับเมนู', `<div class="field"><label>กลุ่มตัวเลือก</label><input value="${attr(group ? group.name : '')}" disabled></div><div class="field"><label>เลือกเมนูอาหาร</label><select id="linkProductSelect">${products.map(product => `<option value="${attr(product.productId)}">${esc(product.name)}</option>`).join('')}</select></div><div class="modal-foot"><button class="btn btn-ghost" data-action="close-modal">ยกเลิก</button><button class="btn btn-primary" data-action="save-link-group" data-id="${attr(groupId)}">ผูกกลุ่ม</button></div>`);
+    }
+
+    /* =====================================================================
+       9. CUSTOMER RECORDS AND POINT ADJUSTMENT
+       ===================================================================== */
+    async function openCustomerDetail(lineUserId) {
+      try {
+        const result = await apiGuard('admin.getCustomer', { lineUserId });
+        const customer = result.customer || {};
+        const tx = result.recentTransactions || [];
+        showModal('ข้อมูลสมาชิก', `<div class="panel-head"><div><h3>${esc(customer.displayName || 'สมาชิก LINE')}</h3><small>${esc(customer.lineUserId || '')}</small></div><span class="pill pill-ready">${number(customer.points)} แต้ม</span></div><div class="form-grid"><div><small class="helper">สมัครเมื่อ</small><b>${thaiDateTime(customer.createdAt)}</b></div><div><small class="helper">อัปเดตล่าสุด</small><b>${thaiDateTime(customer.updatedAt)}</b></div></div><div class="divider"></div><div class="table-actions"><button class="btn btn-primary btn-sm" data-action="adjust-points" data-id="${attr(lineUserId)}">ปรับแต้มสมาชิก</button></div><div class="divider"></div><h4>ธุรกรรมล่าสุด</h4>${tx.map(item => `<div class="order-mini"><div><b>${esc(item.description || item.type)}</b><small>${thaiDateTime(item.createdAt)}</small></div><b>${number(item.pointsChange) > 0 ? '+' : ''}${number(item.pointsChange)} แต้ม</b></div>`).join('') || '<p class="helper">ยังไม่มีประวัติแต้ม</p>'}`);
+      } catch (error) { toast(error.message, 'error'); }
+    }
+
+    function openAdjustPointsModal(lineUserId) {
+      closeModal();
+      showModal('ปรับแต้มสมาชิก', `<form data-form="adjust-points"><input type="hidden" name="lineUserId" value="${attr(lineUserId)}"><div class="field"><label>จำนวนแต้มที่ปรับ</label><input name="pointsChange" type="number" step="1" required placeholder="เช่น 5 หรือ -5"><small class="helper">ใส่จำนวนบวกเพื่อเพิ่มแต้ม และจำนวนลบเพื่อลดแต้ม</small></div><div class="field"><label>เหตุผล</label><textarea name="reason" required placeholder="ระบุเหตุผลในการปรับแต้ม"></textarea></div><div class="modal-foot"><button class="btn btn-ghost" type="button" data-action="close-modal">ยกเลิก</button><button class="btn btn-primary" type="submit">ยืนยันปรับแต้ม</button></div></form>`);
+    }
+
+    async function adjustPoints(data) {
+      await apiGuard('admin.adjustPoints', { lineUserId: data.lineUserId, pointsChange: number(data.pointsChange), reason: data.reason });
+      toast('ปรับแต้มสมาชิกแล้ว'); await loadCustomers(); await loadPointsData(); render();
+    }
+
+    /* =====================================================================
+       10. POINT QR, REWARDS, AND REDEMPTIONS
+       ===================================================================== */
+    async function savePointSettings() {
+      const form = $('#pointSettingsForm');
+      if (!form) return;
+      const data = formDataObject(form);
+      try {
+        await apiGuard('admin.savePointSettings', {
+          pointsEnabled: data.pointsEnabled === true,
+          bahtPerPoint: number(data.bahtPerPoint), pointsPerUnit: number(data.pointsPerUnit),
+          minimumSpend: number(data.minimumSpend), roundingMode: data.roundingMode, expiryMonths: 0
+        });
+        toast('บันทึกเงื่อนไขแต้มแล้ว'); await loadPointsData(); render();
+      } catch (error) { toast(error.message, 'error'); }
+    }
+
+    async function createStoreQr() {
+      const amount = number($('#storeQrAmount') && $('#storeQrAmount').value);
+      if (amount <= 0) { toast('กรุณากรอกยอดซื้อให้ถูกต้อง', 'error'); return; }
+      try {
+        const result = await apiGuard('admin.createStorePointQR', { amount });
+        state.storeQr = result;
+        showModal('QR สะสมแต้มจากร้าน', `<div class="qr-stage"><div><div id="qrCodeMount"></div><div class="qr-timer" id="storeQrCountdown">05:00</div><p class="helper">ลูกค้าเปิดเมนูสะสมแต้มแล้วสแกน QR นี้</p><b>ยอดซื้อ ${money(amount)}</b><p class="helper" id="storeQrState">กำลังรอสมาชิกสแกน...</p></div></div><div id="storeQrSuccess" class="hidden qr-result"><div class="success-mark">✓</div><h3>สะสมแต้มสำเร็จ</h3><b id="storeQrEarned"></b><small id="storeQrCustomer" class="helper"></small></div><div class="modal-foot"><button class="btn btn-ghost" data-action="close-modal">ปิด</button></div>`);
+        if (window.QRCode) new QRCode($('#qrCodeMount'), { text: result.qrPayload, width: 220, height: 220, colorDark: '#17372d', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M });
+        else $('#qrCodeMount').textContent = result.qrPayload;
+        startStoreQrWatch(result);
+      } catch (error) { toast(error.message || 'สร้าง QR ไม่สำเร็จ', 'error'); }
+    }
+
+    function startStoreQrWatch(qr) {
+      stopStoreQrWatch();
+      const expiry = new Date(qr.expiresAt).getTime();
+      state.storeQrTimer = setInterval(() => {
+        const seconds = Math.max(0, Math.ceil((expiry - Date.now()) / 1000));
+        const display = $('#storeQrCountdown');
+        if (display) display.textContent = String(Math.floor(seconds / 60)).padStart(2, '0') + ':' + String(seconds % 60).padStart(2, '0');
+        if (seconds <= 0 && state.storeQrPollTimer) { stopStoreQrWatch(); const status = $('#storeQrState'); if (status) status.textContent = 'QR หมดอายุแล้ว กรุณาสร้างใหม่'; }
+      }, 1000);
+      state.storeQrPollTimer = setInterval(async () => {
+        if (!state.storeQr) return;
+        try {
+          const result = await adminApi('admin.getStorePointQRStatus', { qrToken: qr.qrToken });
+          if (result.status === 'USED') {
+            stopStoreQrWatch();
+            $('#qrCodeMount')?.classList.add('hidden');
+            $('#storeQrCountdown')?.classList.add('hidden');
+            $('#storeQrState')?.classList.add('hidden');
+            $('#storeQrSuccess')?.classList.remove('hidden');
+            if ($('#storeQrEarned')) $('#storeQrEarned').textContent = '+' + number(result.pointsEarned) + ' แต้ม';
+            if ($('#storeQrCustomer')) $('#storeQrCustomer').textContent = 'สมาชิก ' + shortLineId(result.customerLineUserId);
+            toast('ลูกค้าสะสมแต้มสำเร็จแล้ว', 'success');
+            await loadPointsData();
+          } else if (result.status === 'EXPIRED') {
+            stopStoreQrWatch(); if ($('#storeQrState')) $('#storeQrState').textContent = 'QR หมดอายุแล้ว';
+          }
+        } catch (error) { console.warn('Store QR status:', error); }
+      }, 2500);
+    }
+
+    function stopStoreQrWatch() {
+      if (state.storeQrPollTimer) clearInterval(state.storeQrPollTimer);
+      if (state.storeQrTimer) clearInterval(state.storeQrTimer);
+      state.storeQrPollTimer = null; state.storeQrTimer = null;
+    }
+
+    function openCustomerScanner() {
+      const amount = number($('#scanCustomerAmount') && $('#scanCustomerAmount').value);
+      if (amount <= 0) { toast('กรุณากรอกยอดซื้อก่อนสแกน', 'error'); return; }
+      showModal('สแกน QR สะสมแต้มของลูกค้า', `<div class="scanner-box"><div id="qrReader"></div><p id="scannerStatus" class="helper" style="text-align:center">อนุญาตให้ใช้กล้องเพื่อสแกน QR ของลูกค้า</p><div class="scanner-manual"><input id="manualQrToken" placeholder="หรือวาง Token จาก QR ที่นี่"><button class="btn btn-primary btn-sm" data-action="submit-manual-qr">ตรวจสอบ</button></div></div><div class="modal-foot"><button class="btn btn-ghost" data-action="close-modal">ปิด</button><button class="btn btn-soft" data-action="start-camera">เริ่มกล้อง</button></div>`);
+    }
+
+    async function startCameraScan() {
+      const status = $('#scannerStatus');
+      if (!window.Html5Qrcode) { if (status) status.textContent = 'โหลดตัวอ่าน QR ไม่สำเร็จ กรุณาวาง Token ด้วยตนเอง'; return; }
+      try {
+        if (!state.qrScanner) state.qrScanner = new Html5Qrcode('qrReader');
+        if (status) status.textContent = 'กำลังเปิดกล้อง...';
+        await state.qrScanner.start({ facingMode: 'environment' }, { fps: 10, qrbox: { width: 230, height: 230 } }, async decodedText => {
+          try { await state.qrScanner.stop(); } catch (_) { /* scanner may already be stopped */ }
+          await scanCustomerQr(decodedText);
+        }, () => {});
+        if (status) status.textContent = 'กำลังสแกน QR Code...';
+      } catch (error) { if (status) status.textContent = 'เปิดกล้องไม่ได้: ' + error.message + ' · ตรวจสอบสิทธิ์กล้องหรือใช้การวาง Token'; }
+    }
+
+    async function submitManualQr() {
+      const token = $('#manualQrToken') && $('#manualQrToken').value;
+      await scanCustomerQr(token);
+    }
+
+    async function scanCustomerQr(rawToken) {
+      const amount = number($('#scanCustomerAmount') && $('#scanCustomerAmount').value);
+      const token = String(rawToken || '').trim();
+      if (!token) { toast('ไม่พบข้อมูล QR', 'error'); return; }
+      try {
+        const result = await apiGuard('admin.scanCustomerPointQR', { qrToken: token, amount });
+        closeModal();
+        const customer = result.customer && result.customer.customer || {};
+        showModal('สะสมแต้มสำเร็จ', `<div class="qr-result"><div class="success-mark">✓</div><h3>สะสมแต้มสำเร็จ</h3><div style="font-size:30px;font-weight:800;color:var(--green)">+${number(result.pointsChange)} แต้ม</div><b>${esc(customer.displayName || shortLineId(customer.lineUserId))}</b><p class="helper">ยอดซื้อ ${money(amount)} · แต้มคงเหลือ ${number(result.balance || (customer.points || 0))}</p><button class="btn btn-primary" data-action="close-modal">เสร็จสิ้น</button></div>`);
+        toast('แต้มถูกเพิ่มให้ลูกค้าแล้ว'); await loadPointsData();
+      } catch (error) { toast(error.message || 'สแกน QR ไม่สำเร็จ', 'error'); }
+    }
+
+    async function saveReward(data) {
+      await apiGuard('admin.saveReward', { reward: {
+        rewardId: data.rewardId || '', name: data.name, description: data.description || '',
+        pointsCost: number(data.pointsCost), rewardType: data.rewardType || 'PRODUCT',
+        rewardValue: number(data.rewardValue), imageUrl: data.imageUrl || '',
+        isActive: data.isActive === true, stock: data.stock === '' ? -1 : number(data.stock), sortOrder: number(data.sortOrder)
+      } });
+      toast('บันทึกของรางวัลแล้ว'); await loadPointsData(); render();
+    }
+
+    function openRewardModal(rewardId = '') {
+      const reward = (state.rewards || []).find(item => item.rewardId === rewardId) || {};
+      showModal(rewardId ? 'แก้ไขของรางวัล' : 'เพิ่มของรางวัล', `<form data-form="reward"><input type="hidden" name="rewardId" value="${attr(reward.rewardId || '')}"><div class="field"><label>ชื่อของรางวัล</label><input name="name" required value="${attr(reward.name || '')}" placeholder="เช่น ก๋วยเตี๋ยวฟรี 1 ชาม"></div><div class="field"><label>รายละเอียด</label><textarea name="description">${esc(reward.description || '')}</textarea></div><div class="form-grid"><div class="field"><label>แต้มที่ใช้แลก</label><input name="pointsCost" type="number" min="1" value="${attr(reward.pointsCost || 50)}" required></div><div class="field"><label>มูลค่ารางวัล (บาท)</label><input name="rewardValue" type="number" min="0" step="0.01" value="${attr(reward.rewardValue || 0)}"></div><div class="field"><label>ประเภท</label><select name="rewardType"><option value="PRODUCT" ${!reward.rewardType || reward.rewardType === 'PRODUCT' ? 'selected' : ''}>สินค้า</option><option value="DISCOUNT" ${reward.rewardType === 'DISCOUNT' ? 'selected' : ''}>ส่วนลด</option></select></div><div class="field"><label>จำนวนคงเหลือ (-1 ไม่จำกัด)</label><input name="stock" type="number" value="${attr(reward.stock === undefined ? -1 : reward.stock)}"></div><div class="field"><label>ลำดับ</label><input name="sortOrder" type="number" value="${attr(reward.sortOrder || 0)}"></div></div><label class="check-row"><input type="checkbox" name="isActive" checked> เปิดให้แลก</label><div class="modal-foot"><button type="button" class="btn btn-ghost" data-action="close-modal">ยกเลิก</button><button type="submit" class="btn btn-primary">บันทึกของรางวัล</button></div></form>`);
+    }
+
+    async function changeRedemptionStatus(redemptionId, status) {
+      const confirmed = await confirmAction('ยืนยันเปลี่ยนสถานะการแลก?', status === 'REJECTED' ? 'ระบบจะคืนแต้มให้ลูกค้าอัตโนมัติ' : 'ยืนยันว่าลูกค้าได้รับของรางวัลแล้ว');
+      if (!confirmed) return;
+      try {
+        await apiGuard('admin.updateRedemptionStatus', { redemptionId, status });
+        toast(status === 'REJECTED' ? 'ปฏิเสธรายการและคืนแต้มแล้ว' : 'ปิดรายการแลกรางวัลแล้ว');
+        await loadPointsData(); render();
+      } catch (error) { toast(error.message || 'อัปเดตสถานะไม่สำเร็จ', 'error'); }
+    }
+
+    /* =====================================================================
+       11. STORE SETTINGS AND LINE ADMINISTRATORS
+       ===================================================================== */
+    async function saveStoreSettings(data) {
+      const settings = {
+        storeName: data.storeName || '', storeDescription: data.storeDescription || '',
+        storePhone: data.storePhone || '', storeAddress: data.storeAddress || '',
+        openTime: data.openTime || '', closeTime: data.closeTime || '',
+        isStoreOpen: data.isStoreOpen === true, allowDineIn: data.allowDineIn === true,
+        allowTakeaway: data.allowTakeaway === true, allowDelivery: data.allowDelivery === true,
+        promptPayName: data.promptPayName || '', promptPayId: data.promptPayId || '',
+        promptPayQrUrl: data.promptPayQrUrl || ''
+      };
+      await apiGuard('admin.saveStoreSettings', { settings });
+      toast('บันทึกการตั้งค่าร้านแล้ว'); await loadSettings(); render();
+    }
+
+    function openLineAdminModal() {
+      showModal('เพิ่มผู้ดูแล LINE', `<form data-form="line-admin"><div class="field"><label>LINE User ID</label><input name="lineUserId" required placeholder="Uxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"><small class="helper">ผู้ดูแลต้องได้รับอนุญาตจากร้านและควรส่งข้อความหา OA ก่อน</small></div><div class="field"><label>ชื่อแสดงผล</label><input name="displayName" placeholder="ชื่อพนักงาน"></div><div class="field"><label>บทบาท</label><select name="role"><option value="STAFF">พนักงาน</option><option value="OWNER">เจ้าของร้าน</option></select></div><label class="check-row"><input type="checkbox" name="isActive" checked> เปิดใช้งาน</label><div class="modal-foot"><button type="button" class="btn btn-ghost" data-action="close-modal">ยกเลิก</button><button type="submit" class="btn btn-primary">บันทึกผู้ดูแล</button></div></form>`);
+    }
+
+    async function saveLineAdmin(data) {
+      await apiGuard('admin.saveLineAdmin', { user: { lineUserId: data.lineUserId, displayName: data.displayName, role: data.role, isActive: data.isActive === true } });
+      toast('บันทึกผู้ดูแล LINE แล้ว'); await loadLineAdmins(); render();
+    }
+
+    /* =====================================================================
+       12. SOUND ALERTS
+       ===================================================================== */
+    async function unlockAudio() {
+      try {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContextClass) return;
+        if (!state.audioContext) state.audioContext = new AudioContextClass();
+        if (state.audioContext.state === 'suspended') await state.audioContext.resume();
+        state.audioUnlocked = true;
+      } catch (error) { console.warn('Audio unavailable:', error); }
+    }
+
+    function toggleSound() {
+      state.soundEnabled = !state.soundEnabled;
+      localStorage.setItem(CONFIG.SOUND_KEY, String(state.soundEnabled));
+      $('#soundToggle').classList.toggle('on', state.soundEnabled);
+      $('#soundLabel').textContent = state.soundEnabled ? 'เปิดเสียง' : 'ปิดเสียง';
+      if (state.soundEnabled) unlockAudio();
+      toast(state.soundEnabled ? 'เปิดเสียงแจ้งเตือนแล้ว' : 'ปิดเสียงแจ้งเตือนแล้ว');
+    }
+
+    function playOrderSound() {
+      if (!state.soundEnabled || !state.audioUnlocked || !state.audioContext) return;
+      try {
+        const ctx = state.audioContext;
+        const now = ctx.currentTime;
+        [660, 880, 1046].forEach((frequency, index) => {
+          const oscillator = ctx.createOscillator();
+          const gain = ctx.createGain();
+          oscillator.type = 'sine'; oscillator.frequency.value = frequency;
+          gain.gain.setValueAtTime(0.0001, now + index * 0.14);
+          gain.gain.exponentialRampToValueAtTime(0.15, now + index * 0.14 + 0.025);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + index * 0.14 + 0.2);
+          oscillator.connect(gain); gain.connect(ctx.destination);
+          oscillator.start(now + index * 0.14); oscillator.stop(now + index * 0.14 + 0.22);
+        });
+      } catch (error) { console.warn('Cannot play alert sound:', error); }
+    }
+
+    /* =====================================================================
+       13. MODALS, TOASTS, CONFIRMATIONS
+       ===================================================================== */
+    function showModal(title, body, options = {}) {
+      closeModal();
+      const root = $('#modalRoot');
+      root.innerHTML = `<div class="modal-backdrop"><section class="modal ${options.wide ? 'wide' : ''}" role="dialog" aria-modal="true"><header class="modal-head"><h3>${esc(title)}</h3><button class="icon-close" data-action="close-modal" aria-label="ปิด">×</button></header><div class="modal-body">${body}</div></section></div>`;
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      if (state.qrScanner) {
+        state.qrScanner.stop().catch(() => {}).finally(() => { try { state.qrScanner.clear(); } catch (_) {} state.qrScanner = null; });
+      }
+      if (state.storeQrPollTimer || state.storeQrTimer) stopStoreQrWatch();
+      $('#modalRoot').innerHTML = '';
+      document.body.style.overflow = '';
+    }
+
+    function confirmAction(title, message) {
+      return new Promise(resolve => {
+        showModal(title, `<p>${esc(message)}</p><div class="modal-foot"><button class="btn btn-ghost" data-action="confirm-no">ยกเลิก</button><button class="btn btn-primary" data-action="confirm-yes">ยืนยัน</button></div>`);
+        state.confirmResolver = resolve;
+      });
+    }
+
+    function toast(message, type = 'success', detail = '') {
+      const root = $('#toastRoot');
+      const item = document.createElement('div');
+      item.className = 'toast' + (type === 'error' ? ' error' : type === 'warn' ? ' warn' : '');
+      item.innerHTML = `<span>${type === 'error' ? '!' : type === 'warn' ? '⚠' : '✓'}</span><div><b>${esc(message)}</b>${detail ? `<small>${esc(detail)}</small>` : ''}</div>`;
+      root.appendChild(item);
+      setTimeout(() => item.remove(), 4500);
+    }
+
+    /* =====================================================================
+       14. EXPORT AND HELPERS
+       ===================================================================== */
+    function exportOrdersCsv() {
+      const headers = ['เลขออเดอร์', 'ชื่อลูกค้า', 'วันที่', 'ประเภทรับอาหาร', 'วิธีชำระเงิน', 'ยอดรวม', 'สถานะ'];
+      const rows = state.orders.map(order => [order.orderId, order.customerName, order.createdAt, orderTypeLabel(order.orderType), paymentLabel(order.paymentMethod), order.total, STATUS[order.status] || order.status]);
+      const csv = '\uFEFF' + [headers, ...rows].map(row => row.map(value => '"' + String(value == null ? '' : value).replace(/"/g, '""') + '"').join(',')).join('\r\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a'); link.href = url; link.download = 'jaeon-orders-' + new Date().toISOString().slice(0, 10) + '.csv';
+      link.click(); URL.revokeObjectURL(url); toast('ส่งออก CSV แล้ว');
+    }
+
+    function empty(title, description) { return `<div class="empty-state"><div class="empty-icon">⌁</div><b>${esc(title)}</b><span>${esc(description || '')}</span></div>`; }
+    function esc(value) { return String(value == null ? '' : value).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch])); }
+    function attr(value) { return esc(value).replace(/`/g, '&#96;'); }
+    function number(value) { const result = Number(value); return Number.isFinite(result) ? result : 0; }
+    function bool(value) { return value === true || value === 1 || String(value).toLowerCase() === 'true' || String(value) === '1'; }
+    function money(value) { return '฿' + number(value).toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+    function compactMoney(value) { const n = number(value); return n >= 1000 ? (n / 1000).toFixed(1) + 'k' : Math.round(n).toString(); }
+    function statusClass(status) { return ({ NEW: 'pill-new', ACCEPTED: 'pill-accepted', PREPARING: 'pill-preparing', READY: 'pill-ready', COMPLETED: 'pill-completed', CANCELLED: 'pill-cancelled' })[status] || 'pill-neutral'; }
+    function orderTypeLabel(type) { return ({ dinein: 'ทานที่ร้าน', takeaway: 'กลับบ้าน', delivery: 'จัดส่ง' })[String(type || '').toLowerCase()] || type || '-'; }
+    function paymentLabel(method) { return ({ cash: 'เงินสด', promptpay: 'พร้อมเพย์', PROMPTPAY: 'พร้อมเพย์', CASH: 'เงินสด' })[method] || method || '-'; }
+    function paymentStatusLabel(status) { return ({ UNPAID: 'ยังไม่ชำระ', PENDING: 'รอตรวจสอบ', VERIFIED: 'ตรวจสอบแล้ว', PAID: 'ชำระแล้ว', REJECTED: 'ไม่ผ่าน' })[status] || status || '-'; }
+    function shortLineId(id) { const value = String(id || ''); return value.length > 14 ? value.slice(0, 7) + '…' + value.slice(-5) : value || '-'; }
+    function thaiDateTime(value) { if (!value) return '-'; const date = new Date(value); if (Number.isNaN(date.getTime())) return esc(value); return date.toLocaleString('th-TH', { dateStyle: 'short', timeStyle: 'short' }); }
+    function thaiDateShort(value) { const date = new Date(value + (String(value).length === 10 ? 'T12:00:00' : '')); if (Number.isNaN(date.getTime())) return value; return date.toLocaleDateString('th-TH', { day: 'numeric', month: 'short' }); }
+    function fileToDataUrl(file) { return new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.onerror = () => reject(new Error('อ่านไฟล์รูปภาพไม่สำเร็จ')); reader.readAsDataURL(file); }); }
+
+    // Additional delegated actions that need their own confirmation result.
+    document.addEventListener('click', event => {
+      const action = event.target.closest('[data-action]');
+      if (!action) return;
+      if (action.dataset.action === 'switch-category') { state.selectedCategory = action.dataset.id; render(); }
+      if (action.dataset.action === 'save-link-group') {
+        const groupId = action.dataset.id; const productId = $('#linkProductSelect') && $('#linkProductSelect').value;
+        if (!productId) { toast('ไม่พบเมนูที่ยังไม่ได้ผูกกลุ่มนี้', 'warn'); return; }
+        apiGuard('admin.linkProductOption', { productId, groupId, sortOrder: 0 }).then(async () => { toast('ผูกกลุ่มตัวเลือกแล้ว'); closeModal(); await loadCatalog(); render(); }).catch(error => toast(error.message, 'error'));
+      }
+      if (action.dataset.action === 'confirm-yes' || action.dataset.action === 'confirm-no') {
+        const resolver = state.confirmResolver; state.confirmResolver = null; closeModal(); if (resolver) resolver(action.dataset.action === 'confirm-yes');
+      }
+    });
+
+  </script>
+</body>
+</html>
