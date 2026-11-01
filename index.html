@@ -1,0 +1,1260 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#17352c">
+  <meta name="description" content="สั่งอาหารร้านก๋วยเตี๋ยวโบราณ by เจ๊อ้น ผ่าน LINE">
+  <title>ก๋วยเตี๋ยวโบราณ by เจ๊อ้น</title>
+
+  <!-- Modern Thai-friendly typeface -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- LINE LIFF SDK, QR renderer, and QR camera scanner -->
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" defer></script>
+
+  <style>
+    :root {
+      --ink: #1e2d27;
+      --muted: #7d8982;
+      --muted-2: #a5aea8;
+      --brand: #1e4a3c;
+      --brand-2: #2e715a;
+      --brand-soft: #edf5ef;
+      --lime: #b9d7a8;
+      --paper: #f7f8f5;
+      --surface: #ffffff;
+      --line: #e9ede8;
+      --danger: #c84b4b;
+      --warning: #b7791f;
+      --shadow: 0 16px 42px rgba(28, 49, 39, .10);
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    * { box-sizing: border-box; }
+    html { min-height: 100%; background: var(--paper); scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: 'DM Sans', 'Kanit', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    button, input, textarea, select { font: inherit; }
+    button { cursor: pointer; }
+    button:disabled { cursor: not-allowed; opacity: .55; }
+    img { max-width: 100%; display: block; }
+    .hidden { display: none !important; }
+
+    /* Loading / boot state */
+    .loading-screen {
+      position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center;
+      padding: 24px; background: #f7f8f5; transition: opacity .25s ease, visibility .25s ease;
+    }
+    .loading-screen.is-hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+    .loading-inner { display: flex; flex-direction: column; align-items: center; gap: 17px; text-align: center; }
+    .loader-mark {
+      position: relative; width: 70px; height: 70px; display: grid; place-items: center;
+      border-radius: 24px; background: #17352c; color: #fff; box-shadow: 0 12px 28px rgba(23, 53, 44, .18);
+    }
+    .loader-mark::after {
+      content: ''; position: absolute; inset: -8px; border-radius: 30px;
+      border: 2px solid transparent; border-top-color: #6f9e7e; border-right-color: #c2d9b8;
+      animation: spin 1.05s linear infinite;
+    }
+    .loader-mark svg { width: 31px; height: 31px; }
+    .loading-title { font-family: 'Kanit', sans-serif; font-weight: 500; font-size: 19px; letter-spacing: -.2px; }
+    .loading-caption { color: var(--muted); font-size: 12px; }
+    .loading-error { max-width: 340px; color: var(--danger); font-size: 13px; line-height: 1.6; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* App shell */
+    .app-shell { width: min(100%, 760px); min-height: 100vh; margin: 0 auto; padding-bottom: calc(88px + var(--safe-bottom)); }
+    .topbar {
+      position: sticky; top: 0; z-index: 30; display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; padding: 13px 18px 12px; background: rgba(247, 248, 245, .93);
+      backdrop-filter: blur(18px); border-bottom: 1px solid rgba(230, 235, 229, .75);
+    }
+    .brand-wrap { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .brand-logo { width: 42px; height: 42px; display: grid; place-items: center; flex: 0 0 auto; border-radius: 14px; color: white; background: var(--brand); }
+    .brand-logo svg { width: 23px; height: 23px; }
+    .brand-name { overflow: hidden; font-family: 'Kanit', sans-serif; font-weight: 500; font-size: 16px; white-space: nowrap; text-overflow: ellipsis; }
+    .brand-subtitle { margin-top: 1px; color: var(--muted); font-size: 10px; letter-spacing: .3px; }
+    .icon-button {
+      position: relative; width: 42px; height: 42px; display: grid; place-items: center; flex: 0 0 auto;
+      border: 1px solid var(--line); border-radius: 15px; background: var(--surface); color: var(--ink);
+    }
+    .icon-button svg { width: 20px; height: 20px; }
+    .cart-count { position: absolute; top: -5px; right: -5px; min-width: 19px; height: 19px; display: grid; place-items: center; padding: 0 5px; border: 2px solid var(--paper); border-radius: 20px; background: #dd624f; color: #fff; font-size: 10px; font-weight: 700; }
+
+    .page { padding: 17px 16px 24px; animation: fadeUp .22s ease both; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    .greeting-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; margin: 3px 1px 17px; }
+    .eyebrow { color: var(--brand-2); font-size: 11px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; }
+    h1, h2, h3, p { margin-top: 0; }
+    .page-title { margin: 4px 0 0; font-family: 'Kanit', sans-serif; font-size: 25px; line-height: 1.3; font-weight: 500; letter-spacing: -.3px; }
+    .page-desc { margin: 6px 0 0; color: var(--muted); font-size: 12px; line-height: 1.6; }
+    .avatar { width: 44px; height: 44px; flex: 0 0 auto; border-radius: 50%; object-fit: cover; background: #dce8dd; }
+    .avatar-fallback { display: grid; place-items: center; color: var(--brand); font-weight: 700; }
+
+    .hero-card {
+      position: relative; overflow: hidden; min-height: 150px; padding: 20px; border-radius: 23px;
+      color: #fff; background: linear-gradient(125deg, #183a30 0%, #285d49 62%, #668963 100%);
+      box-shadow: 0 14px 28px rgba(30, 74, 60, .17);
+    }
+    .hero-card::before, .hero-card::after { content: ''; position: absolute; border-radius: 50%; border: 1px solid rgba(255,255,255,.13); }
+    .hero-card::before { width: 190px; height: 190px; right: -54px; top: -75px; }
+    .hero-card::after { width: 130px; height: 130px; right: -20px; top: -42px; }
+    .hero-content { position: relative; z-index: 1; max-width: 75%; }
+    .hero-kicker { color: #d6e8d8; font-size: 11px; font-weight: 600; letter-spacing: .7px; }
+    .hero-title { margin: 6px 0 5px; font-family: 'Kanit', sans-serif; font-weight: 500; font-size: 22px; line-height: 1.3; }
+    .hero-copy { margin: 0; color: rgba(255,255,255,.76); font-size: 11px; line-height: 1.6; }
+    .hero-illustration { position: absolute; right: 16px; bottom: 10px; width: 100px; height: 100px; display: grid; place-items: center; opacity: .98; }
+    .hero-illustration svg { width: 100%; height: 100%; }
+
+    .search-box { display: flex; align-items: center; gap: 10px; margin: 16px 0 20px; padding: 0 14px; height: 49px; border: 1px solid var(--line); border-radius: 16px; background: #fff; box-shadow: 0 5px 15px rgba(30,45,39,.025); }
+    .search-box svg { width: 19px; height: 19px; color: #89958e; flex: 0 0 auto; }
+    .search-box input { width: 100%; border: 0; outline: 0; background: transparent; color: var(--ink); font-size: 13px; }
+    .search-box input::placeholder { color: #a7b0aa; }
+    .section-heading { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin: 21px 1px 12px; }
+    .section-title { margin: 0; font-family: 'Kanit', sans-serif; font-size: 17px; font-weight: 500; }
+    .section-link { padding: 3px 0; border: 0; color: var(--brand-2); background: transparent; font-size: 11px; font-weight: 700; }
+    .category-row { display: flex; gap: 8px; overflow-x: auto; margin: 0 -16px; padding: 0 16px 5px; scrollbar-width: none; }
+    .category-row::-webkit-scrollbar { display: none; }
+    .category-chip { flex: 0 0 auto; padding: 9px 14px; border: 1px solid var(--line); border-radius: 30px; background: #fff; color: #68756d; font-size: 11px; font-weight: 600; }
+    .category-chip.active { border-color: var(--brand); background: var(--brand); color: #fff; }
+
+    .product-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .product-card { overflow: hidden; border: 1px solid #edf0eb; border-radius: 18px; background: #fff; box-shadow: 0 5px 15px rgba(30,45,39,.035); transition: transform .15s ease, box-shadow .15s ease; }
+    .product-card:active { transform: scale(.985); }
+    .product-image-wrap { position: relative; overflow: hidden; aspect-ratio: 1.23 / 1; background: #eef1eb; }
+    .product-image { width: 100%; height: 100%; object-fit: cover; }
+    .product-placeholder { width: 100%; height: 100%; display: grid; place-items: center; color: #9ca99f; background: linear-gradient(145deg,#eef2eb,#e4ebe2); }
+    .product-placeholder svg { width: 38px; height: 38px; }
+    .product-tag { position: absolute; top: 9px; left: 9px; padding: 5px 8px; border-radius: 20px; background: rgba(255,255,255,.94); color: var(--brand); font-size: 9px; font-weight: 800; }
+    .product-unavailable { position: absolute; inset: 0; display: grid; place-items: center; background: rgba(28,40,33,.38); color: #fff; font-size: 12px; font-weight: 700; }
+    .product-info { padding: 10px 11px 11px; }
+    .product-name { min-height: 40px; margin: 0; display: -webkit-box; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 2; font-family: 'Kanit', sans-serif; font-size: 14px; line-height: 1.4; font-weight: 400; }
+    .product-desc { overflow: hidden; margin: 3px 0 8px; color: var(--muted); font-size: 10px; white-space: nowrap; text-overflow: ellipsis; }
+    .product-footer { display: flex; justify-content: space-between; align-items: center; gap: 6px; }
+    .price { color: var(--brand); font-size: 14px; font-weight: 800; }
+    .add-mini { width: 32px; height: 32px; display: grid; place-items: center; border: 0; border-radius: 11px; color: #fff; background: var(--brand); }
+    .add-mini svg { width: 17px; height: 17px; }
+    .empty-state { padding: 38px 16px; text-align: center; color: var(--muted); }
+    .empty-state svg { width: 43px; height: 43px; margin: 0 auto 11px; color: #aab7ac; }
+    .empty-state strong { display: block; margin-bottom: 5px; color: var(--ink); font-family: 'Kanit', sans-serif; font-weight: 500; }
+
+    /* Bottom navigation */
+    .bottom-nav {
+      position: fixed; z-index: 40; left: 50%; bottom: 0; transform: translateX(-50%); width: min(100%,760px);
+      display: grid; grid-template-columns: repeat(5,1fr); padding: 8px 9px calc(8px + var(--safe-bottom));
+      border-top: 1px solid rgba(230,235,229,.9); background: rgba(255,255,255,.96); backdrop-filter: blur(16px);
+    }
+    .nav-item { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; min-height: 51px; border: 0; border-radius: 13px; background: transparent; color: #929c95; font-size: 9px; font-weight: 600; }
+    .nav-item svg { width: 21px; height: 21px; stroke-width: 1.8; }
+    .nav-item.active { color: var(--brand); }
+    .nav-item.active::before { content: ''; position: absolute; top: -8px; width: 23px; height: 3px; border-radius: 0 0 4px 4px; background: var(--brand-2); }
+    .nav-badge { position: absolute; top: 0; right: calc(50% - 22px); min-width: 16px; height: 16px; padding: 0 4px; display: grid; place-items: center; border-radius: 20px; background: #df6652; color: white; font-size: 9px; }
+
+    /* Shared controls */
+    .primary-btn, .secondary-btn, .danger-btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 46px; padding: 0 17px;
+      border: 0; border-radius: 14px; font-size: 13px; font-weight: 700; transition: transform .12s ease, opacity .12s ease;
+    }
+    .primary-btn { color: #fff; background: var(--brand); box-shadow: 0 6px 14px rgba(30,74,60,.13); }
+    .secondary-btn { color: var(--brand); background: var(--brand-soft); border: 1px solid #e1ece2; }
+    .danger-btn { color: #a83e3e; background: #fff0ef; }
+    .primary-btn:active, .secondary-btn:active, .danger-btn:active { transform: scale(.985); }
+    .full-width { width: 100%; }
+    .muted { color: var(--muted); }
+    .small { font-size: 11px; }
+    .money { font-variant-numeric: tabular-nums; }
+    .divider { height: 1px; background: var(--line); margin: 13px 0; }
+    .field { display: flex; flex-direction: column; gap: 7px; margin-bottom: 13px; }
+    .field label { color: #5e6b63; font-size: 11px; font-weight: 700; }
+    .field input, .field textarea, .field select {
+      width: 100%; min-height: 45px; padding: 11px 13px; border: 1px solid #e4eae3; border-radius: 13px;
+      outline: 0; color: var(--ink); background: #fff; font-size: 13px;
+    }
+    .field textarea { min-height: 76px; resize: vertical; }
+    .field input:focus, .field textarea:focus, .field select:focus { border-color: #86a992; box-shadow: 0 0 0 3px rgba(66,130,93,.08); }
+    .pill { display: inline-flex; align-items: center; gap: 5px; padding: 5px 9px; border-radius: 30px; background: var(--brand-soft); color: var(--brand-2); font-size: 10px; font-weight: 700; }
+
+    /* Cart and order lists */
+    .list-card { padding: 13px; border: 1px solid var(--line); border-radius: 17px; background: #fff; }
+    .cart-row { display: grid; grid-template-columns: 66px minmax(0,1fr) auto; align-items: start; gap: 11px; }
+    .cart-thumb { width: 66px; height: 66px; border-radius: 13px; object-fit: cover; background: #edf1ea; }
+    .cart-item-name { margin: 0; font-family: 'Kanit', sans-serif; font-size: 14px; font-weight: 400; }
+    .cart-item-options { margin: 4px 0 0; color: var(--muted); font-size: 10px; line-height: 1.6; }
+    .quantity-control { display: inline-flex; align-items: center; gap: 9px; margin-top: 8px; padding: 3px; border: 1px solid var(--line); border-radius: 10px; }
+    .quantity-control button { width: 25px; height: 25px; display: grid; place-items: center; border: 0; border-radius: 7px; color: var(--brand); background: #f0f5f0; font-weight: 700; }
+    .quantity-control span { min-width: 15px; text-align: center; font-size: 11px; font-weight: 700; }
+    .order-card { padding: 14px; border: 1px solid var(--line); border-radius: 17px; background: #fff; }
+    .order-card-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .order-id { font-weight: 800; font-size: 12px; }
+    .status-pill { padding: 5px 9px; border-radius: 30px; background: #edf4ed; color: #38734e; font-size: 10px; font-weight: 700; white-space: nowrap; }
+    .status-pill.pending { background: #fff4df; color: #a66e16; }
+    .status-pill.cancelled { background: #ffeded; color: #b64b4b; }
+    .order-items-text { margin: 10px 0; color: #78857c; font-size: 11px; line-height: 1.7; }
+    .order-card-foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding-top: 10px; border-top: 1px solid var(--line); }
+
+    /* Other / points */
+    .menu-option { display: flex; align-items: center; gap: 12px; width: 100%; padding: 13px; border: 1px solid var(--line); border-radius: 16px; background: #fff; text-align: left; }
+    .menu-option + .menu-option { margin-top: 9px; }
+    .option-icon { width: 42px; height: 42px; display: grid; place-items: center; flex: 0 0 auto; border-radius: 13px; color: var(--brand); background: var(--brand-soft); }
+    .option-icon svg { width: 20px; height: 20px; }
+    .menu-option strong { display: block; font-family: 'Kanit', sans-serif; font-weight: 400; font-size: 14px; }
+    .menu-option small { display: block; margin-top: 2px; color: var(--muted); font-size: 10px; }
+    .menu-option .chevron { margin-left: auto; color: #9da9a0; }
+    .points-card { overflow: hidden; position: relative; padding: 20px; border-radius: 23px; color: #fff; background: linear-gradient(135deg,#17362c,#2c684d); }
+    .points-card::after { content: ''; position: absolute; width: 190px; height: 190px; top: -86px; right: -64px; border: 1px solid rgba(255,255,255,.14); border-radius: 50%; box-shadow: 0 0 0 22px rgba(255,255,255,.035),0 0 0 46px rgba(255,255,255,.025); }
+    .points-number { margin: 8px 0 0; font-family: 'DM Sans', sans-serif; font-size: 41px; font-weight: 800; letter-spacing: -1.5px; line-height: 1; }
+    .points-progress { height: 6px; margin-top: 15px; overflow: hidden; border-radius: 8px; background: rgba(255,255,255,.22); }
+    .points-progress span { display: block; height: 100%; border-radius: 8px; background: #bde0a9; }
+    .qr-panel { padding: 18px 14px; border: 1px solid var(--line); border-radius: 20px; background: #fff; text-align: center; }
+    #customerQrCanvas { width: 210px; height: 210px; display: grid; place-items: center; margin: 13px auto 9px; padding: 9px; border: 1px solid #edf0eb; border-radius: 14px; background: #fff; }
+    #customerQrCanvas img, #customerQrCanvas canvas { max-width: 100%; max-height: 100%; }
+    .qr-obscured { filter: blur(7px); opacity: .28; transition: filter .25s ease, opacity .25s ease; }
+    .qr-result-icon { width: 72px; height: 72px; display: grid; place-items: center; margin: 16px auto 9px; border-radius: 50%; color: #fff; background: #64c87a; box-shadow: 0 8px 20px rgba(74,185,100,.18); }
+    .qr-result-icon svg { width: 37px; height: 37px; stroke-width: 2.5; }
+    .history-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+    .history-row:last-child { border-bottom: 0; }
+    .history-title { font-size: 12px; font-weight: 700; }
+    .history-meta { margin-top: 4px; color: var(--muted); font-size: 10px; }
+    .points-positive { color: #31955b; font-size: 13px; font-weight: 800; }
+    .points-negative { color: #bd5c53; font-size: 13px; font-weight: 800; }
+    .reward-card { display: grid; grid-template-columns: 72px minmax(0,1fr) auto; align-items: center; gap: 11px; padding: 11px; border: 1px solid var(--line); border-radius: 16px; background: #fff; }
+    .reward-image { width: 72px; height: 72px; border-radius: 12px; object-fit: cover; background: #edf1ea; }
+    .reward-name { margin: 0 0 4px; font-family: 'Kanit', sans-serif; font-size: 13px; font-weight: 400; }
+    .reward-cost { color: var(--brand-2); font-size: 11px; font-weight: 800; }
+
+    /* Modal */
+    .modal-backdrop { position: fixed; inset: 0; z-index: 100; display: flex; align-items: flex-end; justify-content: center; padding: 12px; background: rgba(16,29,23,.42); backdrop-filter: blur(5px); animation: backdropIn .16s ease; }
+    .modal-backdrop.center { align-items: center; }
+    @keyframes backdropIn { from { opacity: 0; } to { opacity: 1; } }
+    .modal-card { width: min(100%, 520px); max-height: min(88vh, 800px); overflow: hidden; display: flex; flex-direction: column; border-radius: 24px; background: #fff; box-shadow: var(--shadow); animation: modalIn .2s ease; }
+    @keyframes modalIn { from { opacity: .6; transform: translateY(12px) scale(.99); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    .modal-card.center-modal { width: min(100%, 390px); border-radius: 22px; }
+    .modal-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 18px 12px; border-bottom: 1px solid var(--line); }
+    .modal-title { margin: 0; font-family: 'Kanit', sans-serif; font-size: 17px; font-weight: 500; }
+    .modal-close { width: 34px; height: 34px; display: grid; place-items: center; border: 0; border-radius: 11px; color: #68766d; background: #f1f4f0; }
+    .modal-body { overflow-y: auto; padding: 16px 18px 18px; }
+    .modal-footer { display: flex; gap: 9px; padding: 12px 18px calc(14px + var(--safe-bottom)); border-top: 1px solid var(--line); background: #fff; }
+    .modal-footer > * { flex: 1; }
+    .modal-product-head { display: grid; grid-template-columns: 92px 1fr; gap: 13px; margin-bottom: 15px; }
+    .modal-product-head img, .modal-product-head .product-placeholder { width: 92px; height: 92px; border-radius: 14px; object-fit: cover; }
+    .modal-product-name { margin: 2px 0 4px; font-family: 'Kanit', sans-serif; font-size: 18px; font-weight: 500; }
+    .option-group { padding: 14px 0; border-top: 1px solid var(--line); }
+    .option-group-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
+    .option-group-title { margin: 0; font-family: 'Kanit', sans-serif; font-size: 14px; font-weight: 500; }
+    .option-required { padding: 4px 7px; border-radius: 7px; color: #a66e16; background: #fff5df; font-size: 9px; font-weight: 700; }
+    .option-choice { display: flex; align-items: center; gap: 9px; padding: 10px 0; border-bottom: 1px solid #f1f3ef; font-size: 12px; }
+    .option-choice:last-child { border-bottom: 0; }
+    .option-choice input { width: 17px; height: 17px; accent-color: var(--brand); }
+    .option-choice .choice-price { margin-left: auto; color: var(--brand-2); font-size: 11px; font-weight: 700; }
+    .toast-wrap { position: fixed; z-index: 300; top: 16px; left: 50%; transform: translateX(-50%); width: min(calc(100% - 28px), 420px); pointer-events: none; }
+    .toast { display: flex; align-items: center; gap: 10px; padding: 13px 15px; border-radius: 14px; color: #fff; background: #263d32; box-shadow: 0 12px 30px rgba(0,0,0,.16); font-size: 12px; line-height: 1.5; animation: toastIn .2s ease; }
+    .toast.error { background: #963f3b; }
+    .toast svg { width: 19px; height: 19px; flex: 0 0 auto; }
+    @keyframes toastIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+    .scanner-box { min-height: 250px; overflow: hidden; border-radius: 15px; background: #111; }
+    #qrReader { width: 100%; }
+    #qrReader video { border-radius: 15px; object-fit: cover; }
+
+    @media (min-width: 640px) {
+      .page { padding: 22px 22px 30px; }
+      .topbar { padding-left: 22px; padding-right: 22px; }
+      .product-grid { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 15px; }
+      .product-image-wrap { aspect-ratio: 1.2/1; }
+      .hero-card { min-height: 170px; padding: 24px; }
+      .hero-title { font-size: 25px; }
+      .hero-illustration { width: 122px; height: 122px; right: 28px; }
+      .modal-backdrop { align-items: center; }
+      .modal-card { max-height: 84vh; border-radius: 24px; }
+    }
+    @media (max-width: 360px) {
+      .brand-name { font-size: 14px; }
+      .page-title { font-size: 22px; }
+      .product-grid { gap: 9px; }
+      .product-info { padding: 9px; }
+      .product-name { font-size: 13px; }
+      .nav-item { font-size: 8px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Loading screen shown while LIFF and the API are initialized -->
+  <div id="loadingScreen" class="loading-screen" role="status" aria-live="polite">
+    <div class="loading-inner">
+      <div class="loader-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 10h16M6 10l1.5 9h9L18 10M8 6c0-1.4 1-2 2-2m4 2c0-1.4 1-2 2-2M10 13v3m4-3v3"/>
+          <path d="M3 10c1.3 0 1.3-1 2.7-1 1.3 0 1.3 1 2.6 1 1.4 0 1.4-1 2.7-1 1.3 0 1.3 1 2.7 1 1.3 0 1.3-1 2.6-1 1.4 0 1.4 1 2.7 1"/>
+        </svg>
+      </div>
+      <div class="loading-title">ก๋วยเตี๋ยวโบราณ by เจ๊อ้น</div>
+      <div id="loadingCaption" class="loading-caption">กำลังเชื่อมต่อ LINE และเตรียมเมนูอาหาร...</div>
+      <div id="loadingError" class="loading-error hidden"></div>
+      <button id="loadingRetry" class="secondary-btn hidden" type="button">ลองอีกครั้ง</button>
+    </div>
+  </div>
+
+  <div id="app" class="app-shell hidden">
+    <header class="topbar">
+      <div class="brand-wrap">
+        <div class="brand-logo" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h16M6 10l1.5 9h9L18 10M8 6c0-1.4 1-2 2-2m4 2c0-1.4 1-2 2-2M10 13v3m4-3v3"/></svg>
+        </div>
+        <div style="min-width:0">
+          <div class="brand-name">ก๋วยเตี๋ยวโบราณ by เจ๊อ้น</div>
+          <div class="brand-subtitle">อร่อยแบบต้นตำรับ · สั่งง่ายใน LINE</div>
+        </div>
+      </div>
+      <button class="icon-button" type="button" data-action="go-cart" aria-label="ตะกร้าสินค้า">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.2 11.1a2 2 0 0 0 2 1.6h8.6a2 2 0 0 0 2-1.6L21 8H6"/><circle cx="10" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>
+        <span id="headerCartCount" class="cart-count hidden">0</span>
+      </button>
+    </header>
+
+    <main id="mainContent" aria-live="polite"></main>
+
+    <nav class="bottom-nav" aria-label="เมนูหลัก">
+      <button class="nav-item active" type="button" data-page="home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg><span>หน้าแรก</span>
+      </button>
+      <button class="nav-item" type="button" data-page="menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4v7a3 3 0 0 0 6 0V4M7 4v16M16 4c-2 3-2 6 0 8v8m0-16h4v8h-4"/></svg><span>เมนู</span>
+      </button>
+      <button class="nav-item" type="button" data-page="orders">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10l3 3v15H4V3zM8 10h8M8 14h8M8 18h5"/></svg><span>ออเดอร์</span>
+      </button>
+      <button class="nav-item" type="button" data-page="cart">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.2 11.1a2 2 0 0 0 2 1.6h8.6a2 2 0 0 0 2-1.6L21 8H6"/><circle cx="10" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg><span>ตะกร้า</span><span id="navCartCount" class="nav-badge hidden">0</span>
+      </button>
+      <button class="nav-item" type="button" data-page="other">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M5 21a7 7 0 0 1 14 0"/></svg><span>อื่นๆ</span>
+      </button>
+    </nav>
+  </div>
+
+  <div id="modalRoot"></div>
+  <div id="toastRoot" class="toast-wrap" aria-live="assertive"></div>
+  <iframe id="apiFrameBin" name="apiFrameBin" title="API transport" class="hidden" aria-hidden="true"></iframe>
+
+  <script>
+    'use strict';
+
+    /* ======================================================================
+       1. FRONTEND CONFIGURATION
+       Replace these two values before publishing on GitHub Pages.
+       API_URL must be the deployed Apps Script URL ending in /exec.
+       LIFF_ID must use the LINE Login channel connected to Code.gs.
+       ====================================================================== */
+    const CONFIG = Object.freeze({
+      API_URL: 'PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_EXEC_URL_HERE',
+      LIFF_ID: 'PASTE_YOUR_LIFF_ID_HERE',
+      API_TIMEOUT_MS: 25000,
+      ORDER_POLL_MS: 15000,
+      QR_POLL_MS: 3500,
+      QR_TTL_SECONDS: 300,
+      CURRENCY: '฿'
+    });
+
+    const ICONS = {
+      bowl: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10h18l-1.6 8H4.6L3 10Z"/><path d="M2 10c1.5 0 1.5-1 3-1s1.5 1 3 1 1.5-1 3-1 1.5 1 3 1 1.5-1 3-1 1.5 1 3 1M8 6c0-1.2 1-1.7 1-2.8M13 6c0-1.2 1-1.7 1-2.8"/></svg>',
+      search: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5"/></svg>',
+      plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
+      minus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/></svg>',
+      arrow: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>',
+      check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4 4L19 6"/></svg>',
+      clock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+      bag: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l1 13H4L5 8Z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/></svg>',
+      gift: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10h18v11H3zM2 7h20v3H2zM12 7v14"/><path d="M12 7H7.5a2.5 2.5 0 1 1 2.5-2.5C10 6 12 7 12 7Zm0 0h4.5A2.5 2.5 0 1 0 14 4.5C14 6 12 7 12 7Z"/></svg>',
+      heart: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 8.7c0 5.2-8.8 11-8.8 11s-8.8-5.8-8.8-11A4.7 4.7 0 0 1 12 6.1a4.7 4.7 0 0 1 8.8 2.6Z"/></svg>',
+      history: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 2.6-6.4L3 8"/><path d="M3 3v5h5m4-1v5l3 2"/></svg>',
+      user: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M5 21a7 7 0 0 1 14 0"/></svg>',
+      qr: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h3v3h-3zM20 14v2m-3 3h3v2m-3-5v3"/></svg>',
+      chevron: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>',
+      close: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg>',
+      camera: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h3l2-3h6l2 3h3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2Z"/><circle cx="12" cy="13" r="3.5"/></svg>'
+    };
+
+    const state = {
+      idToken: '',
+      customer: null,
+      store: null,
+      menu: { categories: [], products: [] },
+      cart: [],
+      currentPage: 'home',
+      activeCategory: 'all',
+      searchQuery: '',
+      orders: [],
+      points: 0,
+      rewards: [],
+      pointHistory: [],
+      pointQr: null,
+      pointQrPolling: null,
+      pointTimer: null,
+      orderPolling: null,
+      scanner: null,
+      checkoutBusy: false,
+      pendingConfirm: null,
+      pointHistoryExpanded: false
+    };
+
+    const $ = (selector, root = document) => root.querySelector(selector);
+    const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
+
+    document.addEventListener('DOMContentLoaded', initializeApp);
+
+    /* ======================================================================
+       2. APP INITIALIZATION / LIFF IDENTITY
+       ====================================================================== */
+    async function initializeApp() {
+      $('#loadingRetry').addEventListener('click', () => location.reload());
+      document.addEventListener('click', handleDocumentClick);
+      document.addEventListener('input', handleDocumentInput);
+      document.addEventListener('change', handleDocumentChange);
+
+      if (!isConfigured()) {
+        return showBootError('กรุณาตั้งค่า API_URL และ LIFF_ID ในส่วน FRONTEND CONFIGURATION ก่อนนำไฟล์ขึ้น GitHub Pages');
+      }
+
+      try {
+        setLoading('กำลังเชื่อมต่อ LINE...');
+        if (!window.liff) throw new Error('โหลด LINE LIFF SDK ไม่สำเร็จ กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ต');
+        await liff.init({ liffId: CONFIG.LIFF_ID });
+
+        if (!liff.isLoggedIn()) {
+          // LIFF login uses LINE's own login screen; the website has no separate login page.
+          liff.login({ redirectUri: location.href });
+          return;
+        }
+
+        state.idToken = liff.getIDToken() || '';
+        if (!state.idToken) throw new Error('ไม่พบ LINE ID Token กรุณาตรวจสอบว่า LIFF เปิด Scope openid แล้ว');
+
+        setLoading('กำลังโหลดข้อมูลสมาชิกและเมนูอาหาร...');
+        const [bootstrap, menu] = await Promise.all([
+          api('customer.bootstrap', { idToken: state.idToken }),
+          api('public.getMenu', {})
+        ]);
+        state.customer = bootstrap.customer || null;
+        state.store = bootstrap.store || menu.store || {};
+        state.menu = {
+          categories: Array.isArray(menu.categories) ? menu.categories : [],
+          products: Array.isArray(menu.products) ? menu.products : []
+        };
+        state.cart = restoreCart();
+        await refreshPointsSummary(false);
+        hideLoading();
+        $('#app').classList.remove('hidden');
+        render();
+        startOrderPolling();
+      } catch (error) {
+        console.error('[Jaeon] initializeApp:', error);
+        showBootError(error.message || 'ไม่สามารถเริ่มต้นระบบได้ กรุณาลองใหม่อีกครั้ง');
+      }
+    }
+
+    function isConfigured() {
+      return CONFIG.API_URL.startsWith('https://script.google.com/macros/s/') &&
+        CONFIG.API_URL.endsWith('/exec') &&
+        CONFIG.LIFF_ID && !CONFIG.LIFF_ID.includes('PASTE_');
+    }
+
+    function setLoading(message) {
+      $('#loadingCaption').textContent = message || 'กำลังโหลด...';
+      $('#loadingError').classList.add('hidden');
+      $('#loadingRetry').classList.add('hidden');
+    }
+
+    function hideLoading() {
+      $('#loadingScreen').classList.add('is-hidden');
+      window.setTimeout(() => $('#loadingScreen').classList.add('hidden'), 280);
+    }
+
+    function showBootError(message) {
+      $('#loadingCaption').textContent = 'ยังไม่สามารถเปิดระบบได้';
+      $('#loadingError').textContent = message;
+      $('#loadingError').classList.remove('hidden');
+      $('#loadingRetry').classList.remove('hidden');
+    }
+
+    /* ======================================================================
+       3. GOOGLE APPS SCRIPT API TRANSPORT
+       Apps Script returns an HTML page that postMessages to the parent.
+       Each request uses a unique hidden iframe to avoid response collisions.
+       ====================================================================== */
+    function api(action, data = {}) {
+      return new Promise((resolve, reject) => {
+        const requestId = createRequestId();
+        const frameName = 'jaeon_api_' + requestId;
+        const frame = document.createElement('iframe');
+        frame.name = frameName;
+        frame.title = 'API request';
+        frame.setAttribute('aria-hidden', 'true');
+        frame.style.cssText = 'position:absolute;width:0;height:0;border:0;visibility:hidden;';
+
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = CONFIG.API_URL;
+        form.target = frameName;
+        form.style.display = 'none';
+
+        const payload = {
+          requestId,
+          action,
+          data: data || {}
+        };
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'payload';
+        input.value = JSON.stringify(payload);
+        form.appendChild(input);
+
+        let settled = false;
+        const cleanup = () => {
+          window.removeEventListener('message', onMessage);
+          window.clearTimeout(timeoutId);
+          form.remove();
+          frame.remove();
+        };
+        const finish = (callback, value) => {
+          if (settled) return;
+          settled = true;
+          cleanup();
+          callback(value);
+        };
+        const onMessage = (event) => {
+          if (event.source !== frame.contentWindow) return;
+          const message = event.data;
+          if (!message || message.channel !== 'JAEON_GAS_API' || message.requestId !== requestId) return;
+          const result = message.result;
+          if (result && result.ok) finish(resolve, result.data);
+          else {
+            const err = new Error(result && result.error ? result.error.message : 'API ทำงานไม่สำเร็จ');
+            err.code = result && result.error ? result.error.code : 'API_ERROR';
+            finish(reject, err);
+          }
+        };
+        const timeoutId = window.setTimeout(() => {
+          const err = new Error('เชื่อมต่อ Google Apps Script ไม่สำเร็จ กรุณาตรวจสอบ URL, Deployment และ FRONTEND_ORIGIN');
+          err.code = 'API_TIMEOUT';
+          finish(reject, err);
+        }, CONFIG.API_TIMEOUT_MS);
+
+        window.addEventListener('message', onMessage);
+        document.body.append(frame, form);
+        try { form.submit(); }
+        catch (error) { finish(reject, error); }
+      });
+    }
+
+    function createRequestId() {
+      if (window.crypto && crypto.randomUUID) return crypto.randomUUID().replace(/-/g, '');
+      return 'req' + Date.now().toString(36) + Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
+    }
+
+    /* ======================================================================
+       4. NAVIGATION AND RENDERING
+       ====================================================================== */
+    function navigate(page) {
+      stopPointPolling();
+      closeScanner();
+      state.currentPage = page;
+      if (page === 'orders') refreshOrders().catch(showErrorToast);
+      if (page === 'points') openPointsPage().catch(showErrorToast);
+      if (page === 'other') refreshPointsSummary(false).then(() => { if (state.currentPage === 'other') render(); }).catch(() => {});
+      render();
+      updateBottomNav();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function render() {
+      const main = $('#mainContent');
+      switch (state.currentPage) {
+        case 'home': main.innerHTML = renderHome(true); break;
+        case 'menu': main.innerHTML = renderMenuPage(); break;
+        case 'orders': main.innerHTML = renderOrdersPage(); break;
+        case 'cart': main.innerHTML = renderCartPage(); break;
+        case 'other': main.innerHTML = renderOtherPage(); break;
+        case 'points': main.innerHTML = renderPointsPage(); break;
+        case 'order-detail': main.innerHTML = renderOrderDetailPage(state.activeOrder || null); break;
+        default: state.currentPage = 'home'; main.innerHTML = renderHome(true);
+      }
+      updateCartBadges();
+      updateBottomNav();
+      if (state.currentPage === 'points' && state.pointQr) drawCustomerQr();
+    }
+
+    function updateBottomNav() {
+      $$('[data-page]').forEach(button => button.classList.toggle('active', button.dataset.page === state.currentPage || (state.currentPage === 'points' && button.dataset.page === 'other')));
+    }
+
+    function renderHome(isHome) {
+      const displayName = escapeHtml((state.customer && state.customer.displayName) || 'สมาชิก');
+      const avatar = state.customer && state.customer.pictureUrl
+        ? `<img class="avatar" src="${escapeAttr(state.customer.pictureUrl)}" alt="รูปสมาชิก" onerror="this.style.display='none'">`
+        : `<div class="avatar avatar-fallback">${escapeHtml(firstLetter(displayName))}</div>`;
+      const cats = renderCategoryChips();
+      const featured = filteredProducts().filter(p => p.isFeatured || p.isPopular).slice(0, 4);
+      const list = featured.length ? featured : filteredProducts().slice(0, 4);
+      return `
+        <section class="page">
+          <div class="greeting-row">
+            <div><div class="eyebrow">ยินดีต้อนรับ</div><h1 class="page-title">สวัสดี ${displayName} 👋</h1><p class="page-desc">วันนี้อยากทานก๋วยเตี๋ยวอะไรดี?</p></div>
+            ${avatar}
+          </div>
+          ${renderHero()}
+          ${renderSearch()}
+          <div class="section-heading"><h2 class="section-title">เลือกตามหมวดหมู่</h2><button class="section-link" type="button" data-action="go-menu">ดูทั้งหมด</button></div>
+          ${cats}
+          <div class="section-heading"><h2 class="section-title">${list.length && featured.length ? 'เมนูแนะนำสำหรับคุณ' : 'เมนูของเรา'}</h2><button class="section-link" type="button" data-action="go-menu">ดูเมนูทั้งหมด ${ICONS.arrow}</button></div>
+          ${renderProductGrid(list)}
+          ${state.store && state.store.isStoreOpen === false ? '<div class="list-card" style="margin-top:15px;color:#a66e16;background:#fff8e9">ขณะนี้ร้านปิดรับออเดอร์ชั่วคราว สามารถเลือกชมเมนูได้</div>' : ''}
+        </section>`;
+    }
+
+    function renderHero() {
+      const isOpen = !state.store || state.store.isStoreOpen !== false;
+      return `
+        <div class="hero-card">
+          <div class="hero-content">
+            <div class="hero-kicker">${isOpen ? 'FRESHLY MADE · EVERY DAY' : 'TEMPORARILY CLOSED'}</div>
+            <div class="hero-title">ก๋วยเตี๋ยวรสโบราณ<br>อร่อยง่ายในทุกวัน</div>
+            <p class="hero-copy">${isOpen ? 'เลือกเมนูโปรด ปรับรสในแบบคุณ แล้วสั่งได้เลย' : 'ร้านปิดรับออเดอร์ชั่วคราว กรุณากลับมาใหม่อีกครั้ง'}</p>
+          </div>
+          <div class="hero-illustration" aria-hidden="true"><svg viewBox="0 0 120 120" fill="none"><ellipse cx="60" cy="87" rx="47" ry="13" fill="#0f2c22" opacity=".2"/><path d="M17 55c0 30 19 48 43 48s43-18 43-48H17Z" fill="#f4ead5"/><path d="M17 55c0 12 19 21 43 21s43-9 43-21-19-21-43-21-43 9-43 21Z" fill="#fff8e9"/><path d="M26 55c9-8 18-9 27-3 8 5 14 5 23-1 7-5 13-4 19 2" stroke="#b86c37" stroke-width="4" stroke-linecap="round"/><path d="M42 43c-4-7 3-9 0-15m20 14c-4-7 3-9 0-15m17 17c-3-6 3-8 1-13" stroke="#e9c58b" stroke-width="3" stroke-linecap="round"/><circle cx="41" cy="56" r="4" fill="#6c8a55"/><circle cx="76" cy="59" r="4" fill="#6c8a55"/><path d="M24 89c8 9 23 14 36 14s28-5 36-14" stroke="#d2c5a8" stroke-width="2"/></svg></div>
+        </div>`;
+    }
+
+    function renderSearch() {
+      return `<label class="search-box">${ICONS.search}<input id="menuSearch" type="search" placeholder="ค้นหาเมนูที่อยากทาน..." value="${escapeAttr(state.searchQuery)}" autocomplete="off"></label>`;
+    }
+
+    function renderCategoryChips() {
+      const chips = [{ categoryId: 'all', name: 'ทั้งหมด' }, ...state.menu.categories];
+      return `<div class="category-row">${chips.map(c => `<button class="category-chip ${String(state.activeCategory) === String(c.categoryId) ? 'active' : ''}" type="button" data-action="category" data-category="${escapeAttr(c.categoryId)}">${escapeHtml(c.name)}</button>`).join('')}</div>`;
+    }
+
+    function renderMenuPage() {
+      return `<section class="page"><div class="greeting-row"><div><div class="eyebrow">OUR MENU</div><h1 class="page-title">เมนูอาหาร</h1><p class="page-desc">เลือกเมนูที่ชอบ แล้วปรับแต่งได้ตามใจ</p></div></div>${renderSearch()}${renderCategoryChips()}<div style="height:15px"></div>${renderProductGrid(filteredProducts())}</section>`;
+    }
+
+    function filteredProducts() {
+      const query = state.searchQuery.trim().toLowerCase();
+      return state.menu.products.filter(p => {
+        const available = p.isAvailable !== false;
+        const categoryMatch = state.activeCategory === 'all' || String(p.categoryId) === String(state.activeCategory);
+        const queryMatch = !query || (String(p.name || '') + ' ' + String(p.description || '')).toLowerCase().includes(query);
+        return available && categoryMatch && queryMatch;
+      }).sort((a,b) => Number(b.isFeatured || b.isPopular) - Number(a.isFeatured || a.isPopular) || Number(a.sortOrder || 0) - Number(b.sortOrder || 0));
+    }
+
+    function renderProductGrid(products) {
+      if (!products.length) return `<div class="empty-state">${ICONS.bowl}<strong>ยังไม่พบเมนูอาหาร</strong><span class="small">ลองเลือกหมวดหมู่อื่นหรือค้นหาด้วยคำใหม่</span></div>`;
+      return `<div class="product-grid">${products.map(p => {
+        const tag = p.isPopular ? 'ขายดี' : (p.isFeatured ? 'เมนูแนะนำ' : '');
+        const image = p.imageUrl ? `<img class="product-image" loading="lazy" src="${escapeAttr(p.imageUrl)}" alt="${escapeAttr(p.name)}" onerror="this.parentElement.innerHTML='${escapeAttr(ICONS.bowl)}'">` : `<div class="product-placeholder">${ICONS.bowl}</div>`;
+        return `<article class="product-card"><button type="button" data-action="open-product" data-product-id="${escapeAttr(p.productId)}" style="display:block;width:100%;padding:0;border:0;background:transparent;text-align:left"><div class="product-image-wrap">${image}${tag ? `<span class="product-tag">${tag}</span>` : ''}</div><div class="product-info"><h3 class="product-name">${escapeHtml(p.name)}</h3><p class="product-desc">${escapeHtml(p.description || 'อร่อย สดใหม่ ทำใหม่ทุกชาม')}</p><div class="product-footer"><span class="price">${formatMoney(p.price)}</span><span class="add-mini" aria-label="เพิ่มเมนู">${ICONS.plus}</span></div></div></button></article>`;
+      }).join('')}</div>`;
+    }
+
+    function renderOrdersPage() {
+      const orders = state.orders || [];
+      return `<section class="page"><div class="greeting-row"><div><div class="eyebrow">ORDER HISTORY</div><h1 class="page-title">ออเดอร์ของฉัน</h1><p class="page-desc">ติดตามสถานะและดูรายการสั่งซื้อย้อนหลัง</p></div><span class="pill">${orders.length} รายการ</span></div>${orders.length ? `<div style="display:grid;gap:11px">${orders.map(renderOrderCard).join('')}</div>` : `<div class="empty-state">${ICONS.history}<strong>ยังไม่มีประวัติคำสั่งซื้อ</strong><span class="small">เมื่อคุณสั่งอาหาร รายการจะแสดงที่นี่</span><div style="margin-top:16px"><button class="primary-btn" data-action="go-menu">เลือกเมนูอาหาร</button></div></div>`}</section>`;
+    }
+
+    function renderOrderCard(order) {
+      const itemsText = (order.items || []).map(i => `${escapeHtml(i.productName)} × ${Number(i.quantity || 1)}`).join(' · ') || `${orderTypeLabel(order.orderType)} · ${paymentLabel(order.paymentMethod)}`;
+      const status = statusLabel(order.status);
+      const statusClass = order.status === 'CANCELLED' ? 'cancelled' : (order.status === 'NEW' ? 'pending' : '');
+      return `<article class="order-card"><div class="order-card-head"><span class="order-id">${escapeHtml(order.orderId || '')}</span><span class="status-pill ${statusClass}">${escapeHtml(status)}</span></div><div class="order-items-text">${itemsText}</div><div class="order-card-foot"><div><div class="muted" style="font-size:10px">${formatDate(order.createdAt)}</div><strong class="money">${formatMoney(order.total)}</strong></div><button class="secondary-btn" style="min-height:35px;padding:0 11px;font-size:10px" data-action="order-detail" data-order-id="${escapeAttr(order.orderId)}">รายละเอียด ${ICONS.chevron}</button></div></article>`;
+    }
+
+    function renderOrderDetailPage(order) {
+      if (!order) return `<section class="page"><button class="secondary-btn" data-action="go-orders">กลับ</button><div class="empty-state"><strong>ไม่พบรายละเอียดออเดอร์</strong></div></section>`;
+      const history = Array.isArray(order.statusHistory) ? order.statusHistory : [];
+      return `<section class="page"><button class="secondary-btn" data-action="go-orders">← กลับรายการออเดอร์</button><div class="section-heading"><h1 class="page-title" style="font-size:22px">รายละเอียดออเดอร์</h1><span class="status-pill">${escapeHtml(statusLabel(order.status))}</span></div><div class="list-card"><div class="muted small">หมายเลขคำสั่งซื้อ</div><strong>${escapeHtml(order.orderId)}</strong><div class="divider"></div>${(order.items || []).map(item => `<div class="history-row"><div><div class="history-title">${escapeHtml(item.productName)} × ${Number(item.quantity)}</div><div class="history-meta">${(item.options || []).map(o => escapeHtml(o.optionName)).join(', ')} ${item.note ? ' · ' + escapeHtml(item.note) : ''}</div></div><strong>${formatMoney(item.lineTotal)}</strong></div>`).join('')}<div class="divider"></div><div class="history-row"><span class="muted small">ยอดรวม</span><strong>${formatMoney(order.total)}</strong></div><div class="history-row"><span class="muted small">รูปแบบรับอาหาร</span><strong>${escapeHtml(orderTypeLabel(order.orderType))}</strong></div><div class="history-row"><span class="muted small">การชำระเงิน</span><strong>${escapeHtml(paymentLabel(order.paymentMethod))}</strong></div>${order.note ? `<div class="history-row"><span class="muted small">หมายเหตุ</span><span>${escapeHtml(order.note)}</span></div>` : ''}</div><div class="section-heading"><h2 class="section-title">ความคืบหน้า</h2></div><div class="list-card">${history.length ? history.map(h => `<div class="history-row"><div><div class="history-title">${escapeHtml(statusLabel(h.newStatus))}</div><div class="history-meta">${formatDate(h.createdAt)}</div></div>${ICONS.check}</div>`).join('') : `<span class="muted small">กำลังรอข้อมูลสถานะ</span>`}</div></section>`;
+    }
+
+    function renderCartPage() {
+      const subtotal = cartTotal();
+      if (!state.cart.length) return `<section class="page"><div class="greeting-row"><div><div class="eyebrow">YOUR CART</div><h1 class="page-title">ตะกร้าของฉัน</h1><p class="page-desc">ตรวจสอบรายการก่อนยืนยันคำสั่งซื้อ</p></div></div><div class="empty-state">${ICONS.bag}<strong>ตะกร้ายังว่างอยู่</strong><span class="small">เลือกเมนูที่ชอบ แล้วกลับมาที่นี่ได้เลย</span><div style="margin-top:16px"><button class="primary-btn" data-action="go-menu">เลือกอาหาร</button></div></div></section>`;
+      return `<section class="page"><div class="greeting-row"><div><div class="eyebrow">YOUR CART</div><h1 class="page-title">ตะกร้าของฉัน</h1><p class="page-desc">มี ${cartItemCount()} รายการในตะกร้า</p></div><button class="section-link" data-action="clear-cart">ล้างตะกร้า</button></div><div style="display:grid;gap:10px">${state.cart.map((item,index) => renderCartItem(item,index)).join('')}</div><div class="list-card" style="margin-top:14px"><div class="history-row"><span class="muted small">ยอดรวมอาหาร</span><strong>${formatMoney(subtotal)}</strong></div><div class="history-row"><span class="muted small">ส่วนลด</span><strong>฿0.00</strong></div><div class="history-row"><strong>ยอดชำระทั้งหมด</strong><strong class="price" style="font-size:18px">${formatMoney(subtotal)}</strong></div><button class="primary-btn full-width" style="margin-top:13px" data-action="checkout">ดำเนินการสั่งอาหาร ${ICONS.arrow}</button></div></section>`;
+    }
+
+    function renderCartItem(item,index) {
+      const image = item.imageUrl ? `<img class="cart-thumb" src="${escapeAttr(item.imageUrl)}" alt="">` : `<div class="cart-thumb" style="display:grid;place-items:center;color:#94a398">${ICONS.bowl}</div>`;
+      const selected = (item.options || []).map(o => `${escapeHtml(o.name)}${Number(o.extraPrice) ? ` (+${formatMoney(o.extraPrice)})` : ''}`).join(', ');
+      const note = item.note ? `<br>หมายเหตุ: ${escapeHtml(item.note)}` : '';
+      return `<article class="list-card"><div class="cart-row">${image}<div><h3 class="cart-item-name">${escapeHtml(item.name)}</h3><p class="cart-item-options">${selected || 'ไม่เพิ่มตัวเลือก'}${note}</p><div class="quantity-control"><button type="button" data-action="cart-decrease" data-index="${index}">${ICONS.minus}</button><span>${item.quantity}</span><button type="button" data-action="cart-increase" data-index="${index}">${ICONS.plus}</button></div></div><div style="text-align:right"><strong class="money">${formatMoney(cartLineTotal(item))}</strong><button type="button" class="section-link" style="display:block;margin-top:9px;color:#bd5c53" data-action="cart-remove" data-index="${index}">ลบ</button></div></div></article>`;
+    }
+
+    function renderOtherPage() {
+      const customer = state.customer || {};
+      return `<section class="page"><div class="greeting-row"><div><div class="eyebrow">MORE FOR YOU</div><h1 class="page-title">อื่นๆ</h1><p class="page-desc">จัดการสมาชิกและสิทธิพิเศษของคุณ</p></div></div><div class="list-card" style="display:flex;align-items:center;gap:12px;margin-bottom:14px"><div class="avatar avatar-fallback">${escapeHtml(firstLetter(customer.displayName || 'ส'))}</div><div style="min-width:0"><strong style="display:block;font-family:'Kanit';font-weight:400">${escapeHtml(customer.displayName || 'สมาชิก LINE')}</strong><span class="muted small">สมาชิกก๋วยเตี๋ยวโบราณ by เจ๊อ้น</span></div><span class="pill" style="margin-left:auto">${Number(state.points || 0)} แต้ม</span></div><button class="menu-option" data-action="go-points"><span class="option-icon">${ICONS.gift}</span><span><strong>สะสมแต้ม</strong><small>แสดง QR Code และดูคะแนนสะสม</small></span><span class="chevron">${ICONS.chevron}</span></button><button class="menu-option" data-action="go-orders"><span class="option-icon">${ICONS.history}</span><span><strong>ประวัติการสั่งซื้อ</strong><small>รายการอาหารที่เคยสั่งย้อนหลัง</small></span><span class="chevron">${ICONS.chevron}</span></button><button class="menu-option" data-action="go-menu"><span class="option-icon">${ICONS.heart}</span><span><strong>เลือกเมนูอาหาร</strong><small>กลับไปเลือกอาหารที่ชื่นชอบ</small></span><span class="chevron">${ICONS.chevron}</span></button><div class="section-heading"><h2 class="section-title">ข้อมูลร้าน</h2></div><div class="list-card"><div class="history-row"><span class="muted small">เวลาเปิดร้าน</span><strong>${escapeHtml((state.store && state.store.openTime) || '—')} – ${escapeHtml((state.store && state.store.closeTime) || '—')}</strong></div><div class="history-row"><span class="muted small">เบอร์โทรศัพท์</span><strong>${escapeHtml((state.store && state.store.storePhone) || 'ไม่ได้ระบุ')}</strong></div><div class="history-row"><span class="muted small">ที่อยู่ร้าน</span><span style="text-align:right;max-width:60%">${escapeHtml((state.store && state.store.storeAddress) || 'ไม่ได้ระบุ')}</span></div></div></section>`;
+    }
+
+    function renderPointsPage() {
+      const nextTarget = 50;
+      const progress = Math.min(100, Math.round((Number(state.points || 0) % nextTarget) / nextTarget * 100));
+      const qr = state.pointQr;
+      const qrStatus = qr && qr.status ? qr.status : 'LOADING';
+      const isUsed = qrStatus === 'USED';
+      const isExpired = ['EXPIRED','REPLACED'].includes(qrStatus);
+      const qrUsable = qr && qr.qrToken && qrStatus === 'ACTIVE';
+      return `<section class="page"><div class="greeting-row"><div><div class="eyebrow">MEMBER REWARDS</div><h1 class="page-title">สะสมแต้ม</h1><p class="page-desc">ทุกการซื้อ สะสมคะแนนเพื่อแลกรางวัลพิเศษ</p></div><span class="pill">MEMBER</span></div><div class="points-card"><div style="position:relative;z-index:1"><div style="color:#d4e4d8;font-size:11px;font-weight:600">แต้มสะสมของคุณ</div><div class="points-number money">${Number(state.points || 0).toLocaleString('th-TH')}</div><div style="margin-top:5px;color:#d4e4d8;font-size:10px">คะแนน</div><div class="points-progress"><span style="width:${progress}%"></span></div><div style="margin-top:7px;color:#d4e4d8;font-size:10px">สะสมอีก ${nextTarget - (Number(state.points || 0) % nextTarget)} แต้ม เพื่อครบเป้าหมาย ${nextTarget} แต้ม</div></div></div><div class="section-heading"><h2 class="section-title">QR Code สำหรับสะสมแต้ม</h2></div><div class="qr-panel"><div class="small muted">เปิด QR นี้ให้พนักงานสแกนก่อนชำระเงิน</div><div id="customerQrCanvas" class="${isUsed || isExpired ? 'qr-obscured' : ''}"></div>${isUsed ? `<div class="qr-result-icon">${ICONS.check}</div><strong style="display:block;color:#2e9152;font-family:'Kanit';font-weight:500;font-size:17px">สะสมแต้มสำเร็จ!</strong><div class="muted small" style="margin-top:5px">ได้รับ ${Number(qr.pointsEarned || 0)} แต้ม · ยอดซื้อ ${formatMoney(qr.amount || 0)}</div>` : isExpired ? `<div class="qr-result-icon" style="background:#e7eae6;color:#65736a">${ICONS.clock}</div><strong style="display:block;font-family:'Kanit';font-weight:500">QR Code หมดอายุแล้ว</strong><div class="muted small" style="margin:5px 0 12px">ระบบกำลังสร้าง QR Code ใหม่ให้อัตโนมัติ</div>` : `<div id="customerQrTimer" class="money" style="font-size:20px;font-weight:800;color:var(--brand)">05:00</div><div class="muted small" style="margin-top:3px">QR Code เปลี่ยนเมื่อหมดอายุ หรือเมื่อเข้าใช้งานใหม่</div>${qrUsable ? '' : '<div class="muted small" style="margin-top:8px">กำลังสร้าง QR Code...</div>'}`}</div><div class="section-heading"><h2 class="section-title">สแกน QR จากร้าน</h2></div><div class="list-card"><p class="muted small" style="line-height:1.7;margin-bottom:12px">เมื่อร้านสร้าง QR ระบุยอดซื้อแล้ว คุณสามารถเปิดกล้องเพื่อสแกนและรับแต้มได้ทันที</p><button class="secondary-btn full-width" data-action="scan-store-qr">${ICONS.camera} สแกน QR Code จากร้าน</button></div><div class="section-heading"><h2 class="section-title">แลกรางวัล</h2><button class="section-link" data-action="load-rewards">ดูรางวัล</button></div>${renderRewards()}<div class="section-heading"><h2 class="section-title">ประวัติการสะสมแต้ม</h2><button class="section-link" data-action="load-point-history">ดูทั้งหมด</button></div><div class="list-card">${renderPointHistoryPreview()}</div></section>`;
+    }
+
+    function renderRewards() {
+      if (!state.rewards.length) return `<div class="empty-state" style="padding:20px 10px">${ICONS.gift}<strong>ยังไม่มีของรางวัล</strong><span class="small">ร้านจะเพิ่มของรางวัลให้ในภายหลัง</span></div>`;
+      return `<div style="display:grid;gap:9px">${state.rewards.slice(0,4).map(r => `<div class="reward-card">${r.imageUrl ? `<img class="reward-image" src="${escapeAttr(r.imageUrl)}" alt="">` : `<div class="reward-image" style="display:grid;place-items:center;color:#93a395">${ICONS.gift}</div>`}<div><h3 class="reward-name">${escapeHtml(r.name)}</h3><div class="muted" style="font-size:10px;line-height:1.45">${escapeHtml(r.description || '')}</div><div class="reward-cost">${Number(r.pointsCost)} แต้ม</div></div><button class="secondary-btn" style="min-height:34px;padding:0 9px;font-size:10px" data-action="redeem-reward" data-reward-id="${escapeAttr(r.rewardId)}">แลก</button></div>`).join('')}</div>`;
+    }
+
+    function renderPointHistoryPreview() {
+      if (!state.pointHistory.length) return `<div class="empty-state" style="padding:17px 10px">${ICONS.history}<strong>ยังไม่มีประวัติแต้ม</strong><span class="small">ประวัติจะปรากฏหลังจากสะสมหรือแลกแต้ม</span></div>`;
+      const entries = state.pointHistoryExpanded ? state.pointHistory : state.pointHistory.slice(0,5);
+      return entries.map(tx => `<div class="history-row"><div><div class="history-title">${escapeHtml(tx.description || pointTypeLabel(tx.type))}</div><div class="history-meta">${formatDate(tx.createdAt)}${tx.amountSpent ? ' · ซื้อ ' + formatMoney(tx.amountSpent) : ''}</div></div><div class="${Number(tx.pointsChange) >= 0 ? 'points-positive' : 'points-negative'}">${Number(tx.pointsChange) > 0 ? '+' : ''}${Number(tx.pointsChange)} แต้ม</div></div>`).join('');
+    }
+
+    /* ======================================================================
+       5. PRODUCT OPTIONS / CART
+       ====================================================================== */
+    function openProductModal(productId) {
+      const product = state.menu.products.find(p => String(p.productId) === String(productId));
+      if (!product || product.isAvailable === false) return;
+      const groups = Array.isArray(product.optionGroups) ? product.optionGroups : [];
+      const optionHtml = groups.map(group => {
+        const required = group.isRequired || Number(group.minSelect || 0) > 0;
+        const multi = group.selectionType === 'multiple' || Number(group.maxSelect || 1) > 1;
+        return `<section class="option-group" data-group-id="${escapeAttr(group.groupId)}" data-selection-type="${multi ? 'multiple' : 'single'}" data-min="${Number(group.minSelect || (required ? 1 : 0))}" data-max="${Number(group.maxSelect || (multi ? 30 : 1))}"><div class="option-group-head"><h3 class="option-group-title">${escapeHtml(group.name)}</h3>${required ? '<span class="option-required">จำเป็นต้องเลือก</span>' : '<span class="muted" style="font-size:9px">เลือกได้ตามต้องการ</span>'}</div>${(group.options || []).map(option => `<label class="option-choice"><input type="${multi ? 'checkbox' : 'radio'}" name="opt_${escapeAttr(group.groupId)}" value="${escapeAttr(option.optionId)}" data-option-id="${escapeAttr(option.optionId)}" data-group-id="${escapeAttr(group.groupId)}" data-extra-price="${Number(option.extraPrice || 0)}" data-option-name="${escapeAttr(option.name)}"><span>${escapeHtml(option.name)}</span><span class="choice-price">${Number(option.extraPrice || 0) > 0 ? '+' + formatMoney(option.extraPrice) : 'ฟรี'}</span></label>`).join('')}</section>`;
+      }).join('');
+      const image = product.imageUrl ? `<img src="${escapeAttr(product.imageUrl)}" alt="${escapeAttr(product.name)}">` : `<div class="product-placeholder">${ICONS.bowl}</div>`;
+      openModal(`<div class="modal-header"><h2 class="modal-title">ปรับแต่งเมนู</h2><button class="modal-close" data-action="close-modal">${ICONS.close}</button></div><div class="modal-body"><div class="modal-product-head">${image}<div><h3 class="modal-product-name">${escapeHtml(product.name)}</h3><div class="price">${formatMoney(product.price)}</div><p class="muted small" style="margin-top:6px;line-height:1.5">${escapeHtml(product.description || '')}</p></div></div>${optionHtml || '<div class="muted small">เมนูนี้ไม่มีตัวเลือกเพิ่มเติม</div>'}<div class="field" style="margin-top:12px"><label>หมายเหตุสำหรับเมนูนี้</label><textarea id="productItemNote" placeholder="เช่น ไม่ใส่ผัก ไม่ใส่ถั่วงอก"></textarea></div><div class="field"><label>จำนวน</label><div class="quantity-control" style="width:max-content"><button type="button" data-action="modal-qty-minus">${ICONS.minus}</button><span id="modalQty">1</span><button type="button" data-action="modal-qty-plus">${ICONS.plus}</button></div></div></div><div class="modal-footer"><button class="primary-btn full-width" data-action="add-to-cart" data-product-id="${escapeAttr(product.productId)}">เพิ่มลงตะกร้า · <span id="modalPrice">${formatMoney(product.price)}</span></button></div>`, { productId: product.productId, modalType: 'product' });
+      state.modalQuantity = 1;
+      state.modalProduct = product;
+      updateModalPrice();
+    }
+
+    function selectedProductOptions() {
+      return $$('[data-option-id]', $('#modalRoot')).filter(input => input.checked).map(input => ({
+        optionId: input.dataset.optionId,
+        groupId: input.dataset.groupId,
+        name: input.dataset.optionName,
+        extraPrice: Number(input.dataset.extraPrice || 0),
+        quantity: 1
+      }));
+    }
+
+    function updateModalPrice() {
+      if (!state.modalProduct) return;
+      const extra = selectedProductOptions().reduce((sum,o) => sum + o.extraPrice, 0);
+      const total = (Number(state.modalProduct.price || 0) + extra) * Number(state.modalQuantity || 1);
+      const price = $('#modalPrice');
+      const qty = $('#modalQty');
+      if (price) price.textContent = formatMoney(total);
+      if (qty) qty.textContent = String(state.modalQuantity || 1);
+    }
+
+    function validateModalOptions() {
+      for (const groupEl of $$('.option-group', $('#modalRoot'))) {
+        const groupId = groupEl.dataset.groupId;
+        const selected = $$(`[data-group-id="${cssEscape(groupId)}"]`, groupEl).filter(el => el.checked);
+        const min = Number(groupEl.dataset.min || 0);
+        const max = Number(groupEl.dataset.max || 1);
+        if (selected.length < min) {
+          showToast(`กรุณาเลือก${$('.option-group-title', groupEl).textContent}`, 'error');
+          return false;
+        }
+        if (selected.length > max) {
+          showToast(`เลือก${$('.option-group-title', groupEl).textContent}ได้ไม่เกิน ${max} รายการ`, 'error');
+          return false;
+        }
+      }
+      return true;
+    }
+
+    function addProductToCart(productId) {
+      const product = state.menu.products.find(p => String(p.productId) === String(productId));
+      if (!product) return;
+      if (!validateModalOptions()) return;
+      const options = selectedProductOptions();
+      const quantity = Number(state.modalQuantity || 1);
+      state.cart.push({
+        productId: product.productId,
+        name: product.name,
+        imageUrl: product.imageUrl || '',
+        basePrice: Number(product.price || 0),
+        quantity,
+        options,
+        note: $('#productItemNote') ? $('#productItemNote').value.trim() : ''
+      });
+      saveCart();
+      closeModal();
+      updateCartBadges();
+      showToast('เพิ่มเมนูลงตะกร้าแล้ว');
+      if (state.currentPage === 'cart') render();
+    }
+
+    function cartLineTotal(item) {
+      const extras = (item.options || []).reduce((sum,o) => sum + Number(o.extraPrice || 0) * Number(o.quantity || 1), 0);
+      return (Number(item.basePrice || 0) + extras) * Number(item.quantity || 1);
+    }
+    function cartTotal() { return state.cart.reduce((sum,item) => sum + cartLineTotal(item), 0); }
+    function cartItemCount() { return state.cart.reduce((sum,item) => sum + Number(item.quantity || 0), 0); }
+    function saveCart() { try { sessionStorage.setItem('jaeon_cart_v1', JSON.stringify(state.cart)); } catch (e) {} }
+    function restoreCart() { try { const value = JSON.parse(sessionStorage.getItem('jaeon_cart_v1') || '[]'); return Array.isArray(value) ? value : []; } catch (e) { return []; } }
+    function updateCartBadges() {
+      const count = cartItemCount();
+      const header = $('#headerCartCount'); const nav = $('#navCartCount');
+      [header, nav].forEach(el => { if (!el) return; el.textContent = count > 99 ? '99+' : String(count); el.classList.toggle('hidden', count <= 0); });
+    }
+
+    /* ======================================================================
+       6. CHECKOUT AND ORDER CREATION
+       ====================================================================== */
+    function openCheckout() {
+      if (!state.cart.length) return;
+      if (state.store && state.store.isStoreOpen === false) return showToast('ขณะนี้ร้านปิดรับออเดอร์', 'error');
+      const store = state.store || {};
+      const types = [];
+      if (store.allowDineIn !== false) types.push(['dinein','รับประทานที่ร้าน']);
+      if (store.allowTakeaway !== false) types.push(['takeaway','ซื้อกลับบ้าน']);
+      if (store.allowDelivery === true) types.push(['delivery','จัดส่ง']);
+      const typeHtml = types.map((t,i) => `<label class="option-choice"><input type="radio" name="checkoutType" value="${t[0]}" ${i === 0 ? 'checked' : ''}><span>${t[1]}</span></label>`).join('');
+      openModal(`<div class="modal-header"><h2 class="modal-title">ยืนยันคำสั่งซื้อ</h2><button class="modal-close" data-action="close-modal">${ICONS.close}</button></div><div class="modal-body"><div class="field"><label>รูปแบบการรับอาหาร</label>${typeHtml || '<div class="muted small">ร้านยังไม่ได้เปิดรูปแบบรับอาหาร</div>'}</div><div id="tableNumberWrap" class="field hidden"><label>หมายเลขโต๊ะ</label><input id="checkoutTable" placeholder="เช่น โต๊ะ 3" maxlength="30"></div><div class="field"><label>วิธีชำระเงิน</label><label class="option-choice"><input type="radio" name="checkoutPayment" value="cash" checked><span>เงินสด (ชำระที่ร้าน)</span></label><label class="option-choice"><input type="radio" name="checkoutPayment" value="promptpay"><span>โอนเงินผ่าน QR พร้อมเพย์</span></label></div><div class="field"><label>หมายเหตุถึงร้าน</label><textarea id="checkoutNote" placeholder="เช่น ขอช้อนเพิ่ม / โทรก่อนส่ง"></textarea></div><div class="list-card"><div class="history-row"><span class="muted small">จำนวน ${cartItemCount()} รายการ</span><strong>${formatMoney(cartTotal())}</strong></div><div class="history-row"><strong>ยอดชำระทั้งหมด</strong><strong class="price">${formatMoney(cartTotal())}</strong></div></div><div class="muted small" style="margin-top:10px;line-height:1.6">เมื่อยืนยันแล้ว ระบบจะส่งคำสั่งซื้อไปยังร้านทันที และไม่สามารถแก้ไขรายการได้จากหน้านี้</div></div><div class="modal-footer"><button class="secondary-btn" data-action="close-modal">กลับไปแก้ไข</button><button id="confirmOrderButton" class="primary-btn" data-action="confirm-order">ยืนยันสั่งอาหาร</button></div>`, { modalType: 'checkout' });
+      $$('input[name="checkoutType"]', $('#modalRoot')).forEach(input => input.addEventListener('change', toggleTableNumber));
+      toggleTableNumber();
+    }
+
+    function toggleTableNumber() {
+      const selected = $('input[name="checkoutType"]:checked', $('#modalRoot'));
+      const wrap = $('#tableNumberWrap');
+      if (wrap) wrap.classList.toggle('hidden', !selected || selected.value !== 'dinein');
+    }
+
+    async function submitOrder() {
+      if (state.checkoutBusy) return;
+      if (!state.cart.length) return showToast('ไม่มีรายการอาหารในตะกร้า', 'error');
+      const type = $('input[name="checkoutType"]:checked', $('#modalRoot'));
+      const payment = $('input[name="checkoutPayment"]:checked', $('#modalRoot'));
+      if (!type || !payment) return showToast('กรุณาเลือกวิธีรับอาหารและชำระเงิน', 'error');
+      const button = $('#confirmOrderButton');
+      state.checkoutBusy = true;
+      if (button) { button.disabled = true; button.textContent = 'กำลังส่งคำสั่งซื้อ...'; }
+      const clientRequestId = createRequestId();
+      const payload = {
+        idToken: state.idToken,
+        clientRequestId,
+        orderType: type.value,
+        paymentMethod: payment.value,
+        tableNumber: $('#checkoutTable') ? $('#checkoutTable').value.trim() : '',
+        note: $('#checkoutNote') ? $('#checkoutNote').value.trim() : '',
+        items: state.cart.map(item => ({
+          productId: item.productId,
+          quantity: Number(item.quantity),
+          note: item.note || '',
+          options: (item.options || []).map(option => ({ optionId: option.optionId, quantity: Number(option.quantity || 1) }))
+        }))
+      };
+      try {
+        const order = await api('customer.createOrder', payload);
+        state.cart = [];
+        saveCart();
+        updateCartBadges();
+        closeModal();
+        await refreshOrders();
+        state.activeOrder = order;
+        showOrderSuccess(order);
+      } catch (error) {
+        showToast(error.message || 'ไม่สามารถส่งคำสั่งซื้อได้', 'error');
+        if (button) { button.disabled = false; button.textContent = 'ยืนยันสั่งอาหาร'; }
+      } finally {
+        state.checkoutBusy = false;
+      }
+    }
+
+    function showOrderSuccess(order) {
+      const isPromptpay = order.paymentMethod === 'promptpay';
+      const qrUrl = state.store && state.store.promptPayQrUrl;
+      const promptPayHtml = isPromptpay ? `<div class="list-card" style="margin-top:13px;text-align:center"><strong>ชำระเงินผ่านพร้อมเพย์</strong>${qrUrl ? `<img src="${escapeAttr(qrUrl)}" alt="QR พร้อมเพย์" style="width:190px;height:190px;object-fit:contain;margin:12px auto">` : ''}<div class="muted small">${escapeHtml((state.store && state.store.promptPayName) || 'พร้อมเพย์')}</div><strong style="font-size:20px;color:var(--brand)">${formatMoney(order.total)}</strong><div class="muted small" style="margin-top:6px">สถานะการชำระเงิน: รอตรวจสอบ</div></div>` : '';
+      openModal(`<div class="modal-body" style="text-align:center;padding:26px 20px 20px"><div class="qr-result-icon">${ICONS.check}</div><h2 class="modal-title" style="font-size:21px">ส่งคำสั่งซื้อสำเร็จ!</h2><p class="muted small" style="line-height:1.7;margin:7px 0 14px">ร้านได้รับรายการสั่งอาหารของคุณแล้ว<br>สามารถติดตามสถานะได้ที่เมนูออเดอร์</p><div class="list-card" style="text-align:left"><div class="history-row"><span class="muted small">หมายเลขออเดอร์</span><strong>${escapeHtml(order.orderId || '')}</strong></div><div class="history-row"><span class="muted small">ยอดรวม</span><strong>${formatMoney(order.total)}</strong></div><div class="history-row"><span class="muted small">สถานะ</span><span class="status-pill pending">${escapeHtml(statusLabel(order.status))}</span></div></div>${promptPayHtml}<button class="primary-btn full-width" style="margin-top:15px" data-action="order-success-view">ดูสถานะคำสั่งซื้อ</button><button class="secondary-btn full-width" style="margin-top:8px" data-action="close-modal">กลับหน้าแรก</button></div>`, { modalType: 'success', orderId: order.orderId });
+    }
+
+    /* ======================================================================
+       7. CUSTOMER POINTS / QR REDEMPTION
+       ====================================================================== */
+    async function refreshPointsSummary(loadHistory) {
+      if (!state.idToken) return;
+      const data = await api('customer.getPoints', { idToken: state.idToken });
+      state.points = Number(data.points || 0);
+      state.rewards = Array.isArray(data.rewards) ? data.rewards : [];
+      if (loadHistory) {
+        state.pointHistory = await api('customer.getPointHistory', { idToken: state.idToken, limit: 50 });
+      }
+    }
+
+    async function openPointsPage() {
+      await refreshPointsSummary(true);
+      state.pointQr = null;
+      render();
+      await createCustomerPointQr();
+    }
+
+    async function createCustomerPointQr() {
+      stopPointPolling();
+      state.pointQr = { status: 'LOADING' };
+      render();
+      const result = await api('customer.createPointQR', { idToken: state.idToken });
+      state.pointQr = Object.assign({ status: 'ACTIVE' }, result);
+      render();
+      drawCustomerQr();
+      startPointPolling();
+      startPointTimer();
+    }
+
+    function drawCustomerQr() {
+      const target = $('#customerQrCanvas');
+      if (!target) return;
+      target.innerHTML = '';
+      if (!state.pointQr || !state.pointQr.qrPayload || state.pointQr.status === 'LOADING') return;
+      if (window.QRCode) {
+        new QRCode(target, { text: state.pointQr.qrPayload, width: 190, height: 190, colorDark: '#172d24', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M });
+      } else {
+        target.textContent = state.pointQr.qrPayload;
+        target.style.fontSize = '10px';
+        target.style.overflowWrap = 'anywhere';
+      }
+    }
+
+    function startPointPolling() {
+      stopPointPolling();
+      if (!state.pointQr || !state.pointQr.qrToken) return;
+      state.pointQrPolling = window.setInterval(async () => {
+        if (state.currentPage !== 'points' || !state.pointQr || state.pointQr.status !== 'ACTIVE') return;
+        try {
+          const result = await api('customer.getPointQRStatus', { idToken: state.idToken, qrToken: state.pointQr.qrToken });
+          if (result.status && result.status !== 'ACTIVE') {
+            state.pointQr = Object.assign({}, state.pointQr, result);
+            if (result.status === 'USED') {
+              state.points = Number(result.pointsBalance || state.points);
+              await refreshPointsSummary(true).catch(() => {});
+              showToast('สะสมแต้มสำเร็จแล้ว');
+            }
+            stopPointPolling();
+            stopPointTimer();
+            render();
+            if (result.status === 'EXPIRED' && state.currentPage === 'points') {
+              window.setTimeout(() => createCustomerPointQr().catch(showErrorToast), 650);
+            }
+          }
+        } catch (error) {
+          if (error.code === 'QR_EXPIRED' || error.code === 'QR_NOT_FOUND') {
+            state.pointQr.status = 'EXPIRED';
+            stopPointPolling(); stopPointTimer(); render();
+          }
+        }
+      }, CONFIG.QR_POLL_MS);
+    }
+
+    function stopPointPolling() {
+      if (state.pointQrPolling) window.clearInterval(state.pointQrPolling);
+      state.pointQrPolling = null;
+    }
+
+    function startPointTimer() {
+      stopPointTimer();
+      const update = () => {
+        const target = $('#customerQrTimer');
+        if (!target || !state.pointQr || !state.pointQr.expiresAt) return;
+        const seconds = Math.max(0, Math.ceil((new Date(state.pointQr.expiresAt).getTime() - Date.now()) / 1000));
+        target.textContent = `${String(Math.floor(seconds / 60)).padStart(2,'0')}:${String(seconds % 60).padStart(2,'0')}`;
+        if (seconds <= 0) {
+          state.pointQr.status = 'EXPIRED';
+          stopPointTimer(); stopPointPolling(); render();
+          window.setTimeout(() => {
+            if (state.currentPage === 'points' && state.pointQr && state.pointQr.status === 'EXPIRED') {
+              createCustomerPointQr().catch(showErrorToast);
+            }
+          }, 650);
+        }
+      };
+      update();
+      state.pointTimer = window.setInterval(update, 1000);
+    }
+
+    function stopPointTimer() {
+      if (state.pointTimer) window.clearInterval(state.pointTimer);
+      state.pointTimer = null;
+    }
+
+    async function loadPointHistory() {
+      state.pointHistory = await api('customer.getPointHistory', { idToken: state.idToken, limit: 100 });
+      state.pointHistoryExpanded = true;
+      render();
+      showToast('อัปเดตประวัติแต้มแล้ว');
+    }
+
+    function redeemReward(rewardId) {
+      const reward = state.rewards.find(r => String(r.rewardId) === String(rewardId));
+      if (!reward) return;
+      openConfirmModal('ยืนยันการแลกรางวัล', `ต้องการแลก “${reward.name}” โดยใช้ ${reward.pointsCost} แต้มใช่หรือไม่?`, async () => {
+        const result = await api('customer.redeemReward', { idToken: state.idToken, rewardId });
+        state.points = Number(result.pointsBalance || state.points);
+        await refreshPointsSummary(true);
+        state.pointHistoryExpanded = false;
+        render();
+        showToast('ส่งคำขอแลกรางวัลเรียบร้อยแล้ว');
+      }, 'ยืนยันแลกรางวัล');
+    }
+
+    /* ======================================================================
+       8. SCAN STORE-GENERATED POINT QR
+       ====================================================================== */
+    function openScanner() {
+      if (!window.Html5Qrcode) return showToast('ไม่สามารถโหลดกล้องสแกน QR ได้ กรุณาลองเปิดหน้าใหม่', 'error');
+      openModal(`<div class="modal-header"><h2 class="modal-title">สแกน QR จากร้าน</h2><button class="modal-close" data-action="close-scanner">${ICONS.close}</button></div><div class="modal-body"><p class="muted small" style="line-height:1.6">จัด QR Code ของร้านให้อยู่ในกรอบกล้อง ระบบจะตรวจสอบยอดซื้อและเพิ่มแต้มให้อัตโนมัติ</p><div class="scanner-box"><div id="qrReader"></div></div><div id="scannerMessage" class="muted small" style="margin-top:10px;text-align:center">กำลังเตรียมกล้อง...</div></div>`, { modalType: 'scanner' });
+      window.setTimeout(startScanner, 120);
+    }
+
+    async function startScanner() {
+      try {
+        state.scanner = new Html5Qrcode('qrReader');
+        const cameras = await Html5Qrcode.getCameras();
+        if (!cameras || !cameras.length) throw new Error('ไม่พบกล้องในอุปกรณ์นี้');
+        const cameraId = (cameras.find(c => /back|rear|environment/i.test(c.label)) || cameras[0]).id;
+        await state.scanner.start(cameraId, { fps: 10, qrbox: { width: 230, height: 230 }, aspectRatio: 1 }, onStoreQrScanned, () => {});
+        const msg = $('#scannerMessage'); if (msg) msg.textContent = 'กำลังสแกน QR Code...';
+      } catch (error) {
+        console.error('[Jaeon] scanner:', error);
+        const msg = $('#scannerMessage'); if (msg) msg.textContent = error.message || 'ไม่สามารถเปิดกล้องได้ กรุณาอนุญาตการใช้กล้อง';
+      }
+    }
+
+    async function onStoreQrScanned(decodedText) {
+      if (state.scanner) {
+        try { await state.scanner.stop(); } catch (e) {}
+      }
+      const token = String(decodedText || '').replace(/^JAEON-POINT:/, '').trim();
+      if (!token) return showToast('QR Code ไม่ถูกต้อง', 'error');
+      try {
+        const result = await api('customer.redeemStorePointQR', { idToken: state.idToken, qrToken: token });
+        await closeModal();
+        state.points = Number(result.pointsBalance || state.points);
+        await refreshPointsSummary(true);
+        openModal(`<div class="modal-body" style="text-align:center;padding:28px 20px"><div class="qr-result-icon">${ICONS.check}</div><h2 class="modal-title" style="font-size:21px">สะสมแต้มสำเร็จ!</h2><div style="font-size:34px;font-weight:800;color:#2e9152;margin:12px 0">+${Number(result.pointsChange || result.pointsEarned || 0)} แต้ม</div><div class="muted small">แต้มคงเหลือ ${Number(result.balance || result.pointsBalance || state.points)} แต้ม</div><button class="primary-btn full-width" style="margin-top:19px" data-action="close-modal">เรียบร้อย</button></div>`, { modalType: 'point-success' });
+      } catch (error) {
+        showToast(error.message || 'ไม่สามารถสะสมแต้มได้', 'error');
+        openPointsPage().catch(showErrorToast);
+      }
+    }
+
+    async function closeScanner() {
+      if (state.scanner) {
+        try { if (state.scanner.isScanning) await state.scanner.stop(); } catch (e) {}
+        try { await state.scanner.clear(); } catch (e) {}
+        state.scanner = null;
+      }
+    }
+
+    /* ======================================================================
+       9. CUSTOMER ORDERS AND POLLING
+       ====================================================================== */
+    async function refreshOrders() {
+      if (!state.idToken) return;
+      state.orders = await api('customer.getOrders', { idToken: state.idToken, limit: 30 });
+      if (state.currentPage === 'orders') render();
+    }
+
+    async function openOrderDetail(orderId) {
+      try {
+        const order = await api('customer.getOrder', { idToken: state.idToken, orderId });
+        state.activeOrder = order;
+        state.currentPage = 'order-detail';
+        render(); updateBottomNav(); window.scrollTo({ top: 0, behavior: 'smooth' });
+      } catch (error) { showToast(error.message, 'error'); }
+    }
+
+    function startOrderPolling() {
+      if (state.orderPolling) window.clearInterval(state.orderPolling);
+      state.orderPolling = window.setInterval(async () => {
+        if (!state.idToken || !['orders','order-detail'].includes(state.currentPage)) return;
+        try {
+          await refreshOrders();
+          if (state.currentPage === 'order-detail' && state.activeOrder) {
+            state.activeOrder = await api('customer.getOrder', { idToken: state.idToken, orderId: state.activeOrder.orderId });
+            render();
+          }
+        } catch (error) { console.warn('[Jaeon] order polling:', error.message); }
+      }, CONFIG.ORDER_POLL_MS);
+    }
+
+    /* ======================================================================
+       10. MODALS, TOASTS, AND USER INTERACTIONS
+       ====================================================================== */
+    function openModal(html, meta = {}) {
+      const root = $('#modalRoot');
+      root.innerHTML = `<div class="modal-backdrop ${meta.center ? 'center' : ''}" data-action="backdrop-close"><div class="modal-card ${meta.center ? 'center-modal' : ''}" role="dialog" aria-modal="true">${html}</div></div>`;
+      state.modalMeta = meta;
+    }
+
+    function closeModal() {
+      closeScanner();
+      $('#modalRoot').innerHTML = '';
+      state.modalMeta = null;
+      state.modalProduct = null;
+      if (!state.isRunningConfirm) state.pendingConfirm = null;
+    }
+
+    function openConfirmModal(title, description, onConfirm, confirmLabel = 'ยืนยัน') {
+      state.pendingConfirm = onConfirm;
+      openModal(`<div class="modal-body" style="padding:24px 20px 18px;text-align:center"><div class="option-icon" style="width:54px;height:54px;border-radius:18px;margin:0 auto 13px">${ICONS.check}</div><h2 class="modal-title" style="font-size:19px">${escapeHtml(title)}</h2><p class="muted small" style="line-height:1.7;margin:8px 0 0">${escapeHtml(description)}</p></div><div class="modal-footer"><button class="secondary-btn" data-action="close-modal">ยกเลิก</button><button class="primary-btn" data-action="confirm-pending-action">${escapeHtml(confirmLabel)}</button></div>`, { center: true, modalType: 'confirm' });
+    }
+
+    async function runPendingConfirmation() {
+      const action = state.pendingConfirm;
+      if (typeof action !== 'function') return closeModal();
+      const button = $('[data-action="confirm-pending-action"]', $('#modalRoot'));
+      if (button) { button.disabled = true; button.textContent = 'กำลังดำเนินการ...'; }
+      try {
+        await action();
+        state.pendingConfirm = null;
+        closeModal();
+      } catch (error) {
+        state.pendingConfirm = null;
+        closeModal();
+        showToast(error.message || 'ดำเนินการไม่สำเร็จ', 'error');
+      }
+    }
+
+    function showToast(message, type = 'success') {
+      const root = $('#toastRoot');
+      root.innerHTML = `<div class="toast ${type === 'error' ? 'error' : ''}">${type === 'error' ? ICONS.close : ICONS.check}<span>${escapeHtml(message || 'ดำเนินการเรียบร้อย')}</span></div>`;
+      window.clearTimeout(state.toastTimer);
+      state.toastTimer = window.setTimeout(() => { root.innerHTML = ''; }, 3200);
+    }
+
+    function showErrorToast(error) { showToast(error && error.message ? error.message : 'เกิดข้อผิดพลาด กรุณาลองใหม่', 'error'); }
+
+    async function handleDocumentClick(event) {
+      const pageButton = event.target.closest('[data-page]');
+      if (pageButton) { navigate(pageButton.dataset.page); return; }
+      const button = event.target.closest('[data-action]');
+      if (!button) return;
+      const action = button.dataset.action;
+      switch (action) {
+        case 'go-cart': navigate('cart'); break;
+        case 'go-menu': navigate('menu'); break;
+        case 'go-orders': navigate('orders'); break;
+        case 'go-points': navigate('points'); break;
+        case 'open-product': openProductModal(button.dataset.productId); break;
+        case 'category': state.activeCategory = button.dataset.category; render(); break;
+        case 'close-modal': closeModal(); break;
+        case 'confirm-pending-action': runPendingConfirmation(); break;
+        case 'close-scanner': closeScanner(); closeModal(); break;
+        case 'backdrop-close': if (event.target === button) closeModal(); break;
+        case 'modal-qty-minus': state.modalQuantity = Math.max(1, Number(state.modalQuantity || 1) - 1); updateModalPrice(); break;
+        case 'modal-qty-plus': state.modalQuantity = Math.min(99, Number(state.modalQuantity || 1) + 1); updateModalPrice(); break;
+        case 'add-to-cart': addProductToCart(button.dataset.productId); break;
+        case 'cart-increase': updateCartQuantity(Number(button.dataset.index), 1); break;
+        case 'cart-decrease': updateCartQuantity(Number(button.dataset.index), -1); break;
+        case 'cart-remove': removeCartItem(Number(button.dataset.index)); break;
+        case 'clear-cart': openConfirmModal('ล้างตะกร้าสินค้า', 'ต้องการลบรายการอาหารทั้งหมดออกจากตะกร้าหรือไม่?', () => { state.cart = []; saveCart(); render(); }, 'ล้างตะกร้า'); break;
+        case 'checkout': openCheckout(); break;
+        case 'confirm-order': submitOrder(); break;
+        case 'order-success-view': {
+          const id = state.modalMeta && state.modalMeta.orderId;
+          closeModal(); if (id) openOrderDetail(id); else navigate('orders'); break;
+        }
+        case 'order-detail': openOrderDetail(button.dataset.orderId); break;
+        case 'create-customer-qr': createCustomerPointQr().catch(showErrorToast); break;
+        case 'scan-store-qr': openScanner(); break;
+        case 'load-rewards': await refreshPointsSummary(false).then(render).catch(showErrorToast); break;
+        case 'load-point-history': await loadPointHistory().catch(showErrorToast); break;
+        case 'redeem-reward': redeemReward(button.dataset.rewardId); break;
+      }
+    }
+
+    function handleDocumentInput(event) {
+      if (event.target.id === 'menuSearch') {
+        state.searchQuery = event.target.value || '';
+        const main = $('#mainContent');
+        if (state.currentPage === 'home') {
+          // Keep the input focus/cursor while only replacing the product section.
+          const current = event.target;
+          const selectionStart = current.selectionStart;
+          const selectionEnd = current.selectionEnd;
+          const page = renderHome(true);
+          main.innerHTML = page;
+          const replacement = $('#menuSearch');
+          replacement.focus(); replacement.setSelectionRange(selectionStart, selectionEnd);
+        } else if (state.currentPage === 'menu') {
+          const current = event.target;
+          const selectionStart = current.selectionStart;
+          const selectionEnd = current.selectionEnd;
+          main.innerHTML = renderMenuPage();
+          const replacement = $('#menuSearch'); replacement.focus(); replacement.setSelectionRange(selectionStart, selectionEnd);
+        }
+      }
+    }
+
+    function handleDocumentChange(event) {
+      if (event.target.matches('[data-option-id]')) updateModalPrice();
+      if (event.target.name && event.target.name.startsWith('opt_')) updateModalPrice();
+    }
+
+    function updateCartQuantity(index, delta) {
+      const item = state.cart[index]; if (!item) return;
+      item.quantity = Math.max(1, Math.min(99, Number(item.quantity || 1) + delta));
+      saveCart(); render();
+    }
+
+    function removeCartItem(index) {
+      if (!state.cart[index]) return;
+      state.cart.splice(index, 1); saveCart(); render(); updateCartBadges();
+    }
+
+    /* ======================================================================
+       11. FORMATTING AND SAFETY HELPERS
+       ====================================================================== */
+    function formatMoney(value) {
+      return CONFIG.CURRENCY + Number(value || 0).toLocaleString('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+    }
+    function formatDate(value) {
+      if (!value) return '—';
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return String(value);
+      return new Intl.DateTimeFormat('th-TH', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Asia/Bangkok' }).format(date);
+    }
+    function statusLabel(status) {
+      const labels = { NEW: 'รอร้านรับออเดอร์', ACCEPTED: 'รับออเดอร์แล้ว', PREPARING: 'กำลังปรุงอาหาร', READY: 'อาหารพร้อมแล้ว', COMPLETED: 'เสร็จสิ้น', CANCELLED: 'ยกเลิกแล้ว' };
+      return labels[status] || status || 'ไม่ทราบสถานะ';
+    }
+    function orderTypeLabel(type) { return ({ dinein: 'รับประทานที่ร้าน', takeaway: 'ซื้อกลับบ้าน', delivery: 'จัดส่ง' })[type] || type || '—'; }
+    function paymentLabel(method) { return ({ cash: 'เงินสด', promptpay: 'พร้อมเพย์' })[method] || method || '—'; }
+    function pointTypeLabel(type) { return ({ EARN: 'สะสมแต้ม', REDEEM: 'แลกรางวัล', ADJUST_ADD: 'ปรับเพิ่มแต้ม', ADJUST_SUB: 'ปรับลดแต้ม' })[type] || type || 'รายการแต้ม'; }
+    function firstLetter(text) { return String(text || '?').trim().charAt(0).toUpperCase() || '?'; }
+    function escapeHtml(value) { return String(value == null ? '' : value).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
+    function escapeAttr(value) { return escapeHtml(value).replace(/`/g, '&#96;'); }
+    function cssEscape(value) { return window.CSS && CSS.escape ? CSS.escape(String(value)) : String(value).replace(/[^a-zA-Z0-9_-]/g, '\\$&'); }
+
+    // Expose a tiny, read-only debug snapshot for integration testing.
+    window.JaeonCustomerApp = Object.freeze({
+      version: '1.0.0',
+      getCurrentPage: () => state.currentPage,
+      getCartItemCount: () => cartItemCount(),
+      getApiUrlConfigured: () => isConfigured()
+    });
+  </script>
+</body>
+</html>
